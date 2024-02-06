@@ -59,12 +59,12 @@ local function rel_position(file)
 end
 
 -- FIXME: find a better way to do this
-local function count_files(path, max)
+local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
-		cmd = "dir /b " .. ya.quote(path)
+		cmd = "dir /b " .. ya.quote(tostring(url))
 	else
-		cmd = "ls " .. ya.quote(path)
+		cmd = "ls " .. ya.quote(tostring(url))
 	end
 
 	local i, handle = 0, io.popen(cmd)
@@ -114,12 +114,16 @@ return {
 
 		-- Step 1: Patch the UI with our candidates
 		if not action or action == "keep" then
-			state.keep = action == "keep"
-			state.num = #Folder:by_kind(Folder.CURRENT).window
-			if state.num <= #SINGLE_KEYS then -- Maybe the folder has not been loaded yet
-				state.num = count_files(tostring(cx.active.current.cwd), #SINGLE_KEYS + 1)
+			if #SINGLE_KEYS >= Current.area.h then
+				state.num = Current.area.h -- Fast path
+			else
+				state.num = #Folder:by_kind(Folder.CURRENT).window
+				if state.num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+					state.num = count_files(cx.active.current.cwd, Current.area.h)
+				end
 			end
 
+			state.keep = action == "keep"
 			toggle_ui(state())
 			return next(false, { "_read", state.num })
 		end
@@ -133,8 +137,8 @@ return {
 				cands = { table.unpack(SIGNAL_CANDS, 1, num) }
 			end
 
-			local key = ya.which { cands = cands, silent = true }
-			return next(true, key and { "_apply", key } or { "_reset" })
+			local cand = ya.which { cands = cands, silent = true }
+			return next(true, cand and { "_apply", cand } or { "_reset" })
 		end
 
 		-- Step 3: Restore the UI we patched in step 1, once we read the candidate
