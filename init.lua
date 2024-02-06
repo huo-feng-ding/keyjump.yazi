@@ -1,4 +1,9 @@
 -- stylua: ignore
+local SPECIAL_KEYS = {
+	" ","<Esc>"
+}
+
+-- stylua: ignore
 local SINGLE_KEYS = {
 	"p", "b", "e", "t", "a", "o", "i", "n", "s", "r", "h", "l", "d", "c",
 	"u", "m", "f", "g", "w", "v", "k", "j", "x", "z", "y", "q"
@@ -12,6 +17,12 @@ local DOUBLE_KEYS = {
 	"ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", "cu", "ci", "co", "ch",
 	"cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", "wk", "wl", "wn"
 }
+
+-- stylua: ignore
+local SPECIAL_CANDS = {
+	{ on = " " },{ on = "<Esc>" }
+}
+
 -- stylua: ignore
 local SIGNAL_CANDS = {
 	{ on = "p" }, { on = "b" }, { on = "e" }, { on = "t" }, { on = "a" },
@@ -62,7 +73,7 @@ end
 local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
-		cmd = cx.active.conf.show_hidden and "dir /b /a " or "dir /b "
+		cmd = cx.active.conf.show_hidden and "dir /a " or "dir "
 		cmd = cmd .. ya.quote(tostring(url))
 	else
 		cmd = cx.active.conf.show_hidden and "ls -A  " or "ls "
@@ -81,9 +92,7 @@ local function count_files(url, max)
 		return i
 	else
 		local f = io.popen(cmd)
-		-- 读取命令的输出
 		local num = tonumber(f:read("*all"))
-		-- 关闭文件对象
 		f:close()
 
 		if num == nil then
@@ -132,7 +141,7 @@ return {
 		local action = args[1]
 
 		-- Step 1: Patch the UI with our candidates
-		if not action or action == "keep" then
+		if not action or action == "keep" or action == "select" then
 			if #SINGLE_KEYS >= Current.area.h then
 				state.num = Current.area.h -- Fast path
 			else
@@ -142,7 +151,7 @@ return {
 				end
 			end
 
-			state.keep = action == "keep"
+			state.type = action
 			toggle_ui(state())
 			return next(false, { "_read", state.num })
 		end
@@ -156,8 +165,18 @@ return {
 				cands = { table.unpack(SIGNAL_CANDS, 1, num) }
 			end
 
+			for i = 1, #SPECIAL_KEYS do --attach special key 
+				table.insert(cands, SPECIAL_CANDS[i])
+			end
+
 			local cand = ya.which { cands = cands, silent = true }
-			return next(true, cand and { "_apply", cand } or { "_reset" })
+
+			if cand == nil then --never auto exit when pressing a nonexistent prompt key
+				return next(false, { "_read", num})
+			else
+				return next(true, { "_apply", cand, num} )
+			end
+			
 		end
 
 		-- Step 3: Restore the UI we patched in step 1, once we read the candidate
@@ -166,13 +185,44 @@ return {
 			return
 		end
 
-		-- Step 4: Apply the candidate by moving the cursor of the file list
-		local folder = Folder:by_kind(Folder.CURRENT)
 		local cand = tonumber(args[2])
+		local entry_num = tonumber(args[3]) 
+		local folder = Folder:by_kind(Folder.CURRENT)
+
+		-- hit esc key
+		if cand > entry_num and SPECIAL_KEYS[cand - entry_num] == "<Esc>" then 
+			return
+		end
+
+		-- Step 4: select mode, allow use special key in keyjump
+		if state.type == "select" then
+			if cand <= entry_num then -- hit normal key
+				local folder = Folder:by_kind(Folder.CURRENT)
+				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
+
+				next(true, { "select" })
+				return
+			end
+
+			-- hit space key
+			if SPECIAL_KEYS[cand - entry_num] == " " then
+				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1 ]
+				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
+				ya.manager_emit("select", { state=toggle_state })
+				ya.manager_emit("arrow", { 1 })
+			end
+
+			--never auto exit select mode
+			next(true, { "select" })
+			return
+		end
+	
+		-- arrow in keep mode and normal mode
 		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 
-		-- Step 5: If keep mode is enabled, return to step 1
-		if state.keep and folder.window[cand].cha.is_dir then
+		-- Step 5: keep mode, will auto enter when select folder and will auto exit when select file
+		if state.type == "keep" and folder.window[cand].cha.is_dir then 
+			local folder = Folder:by_kind(Folder.CURRENT)
 			ya.manager_emit("enter", {})
 			next(true, { "keep" })
 		end
