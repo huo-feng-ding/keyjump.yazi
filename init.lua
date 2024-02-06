@@ -62,21 +62,40 @@ end
 local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
-		cmd = cx.active.conf.show_hidden and "dir /a " or "dir " .. ya.quote(tostring(url))
+		cmd = cx.active.conf.show_hidden and "dir /a " or "dir "
+		cmd = cmd .. ya.quote(tostring(url))
 	else
-		cmd = cx.active.conf.show_hidden and "ls -a " or "ls " .. ya.quote(tostring(url))
+		cmd = cx.active.conf.show_hidden and "ls -A  " or "ls "
+		cmd = cmd .. ya.quote(tostring(url)) .. " | wc -l"
 	end
 
-	local i, handle = 0, io.popen(cmd)
-	for _ in handle:lines() do
-		i = i + 1
-		if i == max then
-			break
+	if ya.target_family() == "windows" then  
+		local i, handle = 0, io.popen(cmd)
+		for _ in handle:lines() do
+			i = i + 1
+			if i == max then
+				break
+			end
+		end
+		handle:close()
+		return i
+	else
+		local f = io.popen(cmd)
+		-- 读取命令的输出
+		local num = tonumber(f:read("*all"))
+		-- 关闭文件对象
+		f:close()
+
+		if num == nil then
+			ya.err("caculate file num error, target folder: " .. ya.quote(tostring(url)))
+		end		
+
+		if num > max then
+			return max
+		else
+			return num
 		end
 	end
-
-	handle:close()
-	return i
 end
 
 local function toggle_ui(st)
