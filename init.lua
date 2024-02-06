@@ -20,7 +20,7 @@ local DOUBLE_KEYS = {
 
 -- stylua: ignore
 local SPECIAL_CANDS = {
-	{ on = " " },{ on = "<ESC>" }
+	{ on = " " },{ on = "<Esc>" }
 }
 
 -- stylua: ignore
@@ -92,9 +92,7 @@ local function count_files(url, max)
 		return i
 	else
 		local f = io.popen(cmd)
-		-- 读取命令的输出
 		local num = tonumber(f:read("*all"))
-		-- 关闭文件对象
 		f:close()
 
 		if num == nil then
@@ -172,7 +170,13 @@ return {
 			end
 
 			local cand = ya.which { cands = cands, silent = true }
-			return next(true, cand and { "_apply", cand, num} or { "_reset" })
+
+			if cand == nil then --does't automatically exit when pressing a nonexistent prompt key
+				return next(false, { "_read", num})
+			else
+				return next(true, { "_apply", cand, num} )
+			end
+			
 		end
 
 		-- Step 3: Restore the UI we patched in step 1, once we read the candidate
@@ -195,21 +199,26 @@ return {
 				return
 			end
 
+			-- hit special key
 			if SPECIAL_KEYS[cand - entry_num] == " " then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1 ]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state=toggle_state })
 				ya.manager_emit("arrow", { 1 })
+			elseif SPECIAL_KEYS[cand - entry_num] == "<Esc>" then
+				return
 			end
 
+			--never auto exit select mode
 			next(true, { "select" })
 			return
 		end
 	
+		-- arrow in keep mode
 		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 
 		-- Step 5: keep mode, will auto enter when select folder and will auto exit when select file
-		if state.type == "keep" and folder.window[cand].cha.is_dir then
+		if state.type == "keep" and folder.window[cand].cha.is_dir then 
 			local folder = Folder:by_kind(Folder.CURRENT)
 			ya.manager_emit("enter", {})
 			next(true, { "keep" })
