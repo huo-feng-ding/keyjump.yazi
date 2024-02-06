@@ -60,12 +60,14 @@ end
 
 -- FIXME: find a better way to do this
 local function count_files(path, max)
-	local shell = { "ls", path }
+	local cmd
 	if ya.target_family() == "windows" then
-		shell = { "dir", path }
+		cmd = "dir /b " .. ya.quote(path)
+	else
+		cmd = "ls " .. ya.quote(path)
 	end
 
-	local i, handle = 0, io.popen(ya.shell_join(shell))
+	local i, handle = 0, io.popen(cmd)
 	for _ in handle:lines() do
 		i = i + 1
 		if i == max then
