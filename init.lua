@@ -59,12 +59,12 @@ local function rel_position(file)
 end
 
 -- FIXME: find a better way to do this
-local function count_files(path, max)
+local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
-		cmd = "dir /b " .. ya.quote(path)
+		cmd = "dir /b " .. ya.quote(tostring(url))
 	else
-		cmd = "ls " .. ya.quote(path)
+		cmd = "ls " .. ya.quote(tostring(url))
 	end
 
 	local i, handle = 0, io.popen(cmd)
