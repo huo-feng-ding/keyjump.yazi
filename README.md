@@ -2,6 +2,9 @@
 
 A Yazi plugin which like flash.nvim in Neovim, allow use key char to precise selection.
 
+> [!NOTE]
+> The latest main branch of Yazi is required at the moment.
+
 ## Keep mode
 
 keep mode, when select a dir, it will auto enter and keep in "keyjump" mode.
