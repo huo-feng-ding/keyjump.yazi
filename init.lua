@@ -171,7 +171,7 @@ return {
 
 			local cand = ya.which { cands = cands, silent = true }
 
-			if cand == nil then --does't automatically exit when pressing a nonexistent prompt key
+			if cand == nil then --never auto exit when pressing a nonexistent prompt key
 				return next(false, { "_read", num})
 			else
 				return next(true, { "_apply", cand, num} )
@@ -189,6 +189,11 @@ return {
 		local entry_num = tonumber(args[3]) 
 		local folder = Folder:by_kind(Folder.CURRENT)
 
+		-- hit esc key
+		if cand > entry_num and SPECIAL_KEYS[cand - entry_num] == "<Esc>" then 
+			return
+		end
+
 		-- Step 4: select mode, allow use special key in keyjump
 		if state.type == "select" then
 			if cand <= entry_num then -- hit normal key
@@ -199,14 +204,12 @@ return {
 				return
 			end
 
-			-- hit special key
+			-- hit space key
 			if SPECIAL_KEYS[cand - entry_num] == " " then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1 ]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state=toggle_state })
 				ya.manager_emit("arrow", { 1 })
-			elseif SPECIAL_KEYS[cand - entry_num] == "<Esc>" then
-				return
 			end
 
 			--never auto exit select mode
@@ -214,7 +217,7 @@ return {
 			return
 		end
 	
-		-- arrow in keep mode
+		-- arrow in keep mode and normal mode
 		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 
 		-- Step 5: keep mode, will auto enter when select folder and will auto exit when select file
