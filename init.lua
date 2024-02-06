@@ -1,6 +1,6 @@
 -- stylua: ignore
 local SPECIAL_KEYS = {
-	" ","<Esc>"
+	"<Space>","<Esc>"
 }
 
 -- stylua: ignore
@@ -20,7 +20,7 @@ local DOUBLE_KEYS = {
 
 -- stylua: ignore
 local SPECIAL_CANDS = {
-	{ on = " " },{ on = "<Esc>" }
+	{ on = "<Space>" },{ on = "<Esc>" }
 }
 
 -- stylua: ignore
@@ -205,7 +205,7 @@ return {
 			end
 
 			-- hit space key
-			if SPECIAL_KEYS[cand - entry_num] == " " then
+			if SPECIAL_KEYS[cand - entry_num] == "<Space>" then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1 ]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state=toggle_state })
