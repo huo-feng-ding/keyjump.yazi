@@ -62,9 +62,9 @@ end
 local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
-		cmd = "dir /b " .. ya.quote(tostring(url))
+		cmd = cx.active.conf.show_hidden and "dir /a " or "dir " .. ya.quote(tostring(url))
 	else
-		cmd = "ls " .. ya.quote(tostring(url))
+		cmd = cx.active.conf.show_hidden and "ls -a " or "ls " .. ya.quote(tostring(url))
 	end
 
 	local i, handle = 0, io.popen(cmd)
