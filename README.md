@@ -6,7 +6,7 @@ A Yazi plugin which like flash.nvim in Neovim, allow use key char to precise sel
 
 keep mode, when select a dir, it will auto enter and keep in "keyjump" mode.
 
-When select a file or press <ESC> , it will leave "keyjump" mode.
+When select a file or press "ESC" , it will leave "keyjump" mode.
 
 https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/dd998a34-49b0-481d-b032-d9849a89ba48
 
@@ -18,7 +18,7 @@ https://github.com/DreamMaoMao/keyjump/assets/30348075/6ba722ce-8b55-4c80-ac81-b
 
 ## Select mode
 
-Select mode, you can use "<Space>" key to select/unselect item, and press <Esc> to exit.
+Select mode, you can use "Space" key to select/unselect item, and press "Esc" to exit.
 
 https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9598-fe9ef9098acc
 
@@ -62,7 +62,7 @@ desc = "Keyjump (Normal mode)"
 [[manager.prepend_keymap]]
 on   = [ "i" ]
 exec = "plugin keyjump --sync --args=select"
-desc = "Keyjump (Normal mode)"
+desc = "Keyjump (Select mode)"
 ```
 
 
