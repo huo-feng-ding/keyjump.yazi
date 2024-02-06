@@ -16,10 +16,11 @@ Normal mode, when select a item, it will auto leave keyjump mode
 
 https://github.com/DreamMaoMao/keyjump/assets/30348075/6ba722ce-8b55-4c80-ac81-b6b7ade74491
 
-## Normal mode
+## Select mode
 
 Select mode, you can use "<Space>" key to select/unselect item, and press <Esc> to exit.
 
+https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9598-fe9ef9098acc
 
 
 ## Install
