@@ -119,6 +119,41 @@ local PARENT_DOUBLE_CANDS = {
 
 }
 
+local function serialize(obj)
+    local lua = ""  
+    local t = type(obj)  
+    if t == "number" then  
+        lua = lua .. obj  
+    elseif t == "boolean" then  
+        lua = lua .. tostring(obj)  
+    elseif t == "string" then  
+        lua = lua .. string.format("%q", obj)  
+    elseif t == "table" then  
+        lua = lua .. "{"  
+        for k, v in pairs(obj) do  
+            lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","  
+        end  
+        local metatable = getmetatable(obj)  
+        if metatable ~= nil and type(metatable.__index) == "table" then  
+            for k, v in pairs(metatable.__index) do  
+                lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","  
+            end  
+        end  
+        lua = lua .. "}"  
+    elseif t == "nil" then  
+        return nil  
+    else  
+        error("can not serialize a " .. t .. " type.")  
+    end  
+    return lua  
+end
+
+local function table2string(tablevalue)
+    local stringtable = serialize(tablevalue)
+    print(stringtable)
+    return stringtable
+end
+
 -- FIXME: refactor this to avoid the loop
 local function rel_position(file,view)
 
@@ -184,7 +219,7 @@ local function toggle_ui(st)
 	st.icon, st.mode = Folder.icon, Status.mode
 	Folder.icon = function(self, file)
 
-		if state.type == global then
+		if st.type == "global" then
 			local pos = rel_position(file,"current")
 			if not pos then
 				local pos = rel_position(file,"parent")
@@ -194,18 +229,14 @@ local function toggle_ui(st)
 					return ui.Span(PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 				end
 			else
-				if st.num > #SINGLE_KEYS then
-					return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
-				else
-					return ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")	
-				end			
+				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")		
 			end
 		
 		else
 			local pos = rel_position(file,"current")
 			if not pos then
 				return st.icon(self, file)
-			elseif st.num > #SINGLE_KEYS then
+			elseif st.current_num > #SINGLE_KEYS then
 				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			else
 				return ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
@@ -230,38 +261,81 @@ return {
 		-- Step 1: Patch the UI with our candidates
 		if not action or action == "keep" or action == "select" then
 			if #SINGLE_KEYS >= Current.area.h then
-				state.num = Current.area.h -- Fast path
+				state.current_num = Current.area.h -- Fast path
 			else
-				state.num = #Folder:by_kind(Folder.CURRENT).window
-				if state.num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-					state.num = count_files(cx.active.current.cwd, Current.area.h)
+				state.current_num = #Folder:by_kind(Folder.CURRENT).window
+				if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+					state.current_num = count_files(cx.active.current.cwd, Current.area.h)
 				end
 			end
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.num })
+			return next(false, { "_read", state.current_num, nil })
+		end
+
+		if action == "global" then
+			ya.err("jsdlfjljsf")
+			state.current_num = #Folder:by_kind(Folder.CURRENT).window
+			if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+				state.current_num = count_files(cx.active.current.cwd, Current.area.h)
+			end
+
+			state.parent_num = #Folder:by_kind(Folder.PARENT).window
+			if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
+				state.parent_num = count_files(cx.active.parent.cwd, Parent.area.h)
+			end
+
+			state.type = action
+			toggle_ui(state())
+			return next(false, { "_read", state.current_num, state.parent_num })			
 		end
 
 		-- Step 2: Waiting to read the candidate from the user
 		if action == "_read" then
-			local cands, num = nil, tonumber(args[2])
-			if num > #SINGLE_KEYS then
-				cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, num) }
+			local current_num = tonumber(args[2])
+			local parent_num = tonumber(args[3])
+			local current_cands,parent_cands,cands = {},{},{}
+			if current_num ==0 then
+				current_cands = {}
+			elseif args[3] ~= nil then
+				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
+			elseif current_num > #SINGLE_KEYS then
+				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
 			else
-				cands = { table.unpack(SIGNAL_CANDS, 1, num) }
+				current_cands = { table.unpack(SIGNAL_CANDS, 1, current_num) }
+			end
+
+			if parent_num ~= nil and parent_num ~= 0 then
+				parent_cands = { table.unpack(PARENT_DOUBLE_CANDS, 1, parent_num) }
+			else
+				parent_cands = {}
+				parent_num = 0
+			end
+
+			-- ya.err("c"..table2string(current_cands))
+			-- ya.err("p"..table2string(parent_cands))
+			-- ya.err("p"..tostring(parent_cands))
+
+			for i = 1, #current_cands do --attach special key
+				table.insert(cands, current_cands[i])
+			end
+
+			for i = 1, #parent_cands do --attach special key
+				table.insert(cands, parent_cands[i])
 			end
 
 			for i = 1, #SPECIAL_KEYS do --attach special key
 				table.insert(cands, SPECIAL_CANDS[i])
 			end
 
-			local cand = ya.which { cands = cands, silent = true }
+
+			local cand = ya.which { cands = cands, silent = false }
 
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
-				return next(false, { "_read", num })
+				return next(false, { "_read", current_num, parent_num })
 			else
-				return next(true, { "_apply", cand, num })
+				return next(true, { "_apply", cand, current_num, parent_num })
 			end
 		end
 
@@ -272,17 +346,51 @@ return {
 		end
 
 		local cand = tonumber(args[2])
-		local entry_num = tonumber(args[3])
+		local current_entry_num = tonumber(args[3])
+		local parent_entry_num = tonumber(args[4])
 		local folder = Folder:by_kind(Folder.CURRENT)
 
 		-- hit esc key
-		if cand > entry_num and SPECIAL_KEYS[cand - entry_num] == "<Esc>" then
+		if cand > (current_entry_num + parent_entry_num) and SPECIAL_KEYS[cand - current_entry_num - parent_entry_num] == "<Esc>" then
+			return
+		end
+
+		if state.type == "global" then
+
+			-- hit current area
+			if cand <= current_entry_num then -- hit normal key
+				local current_folder = Folder:by_kind(Folder.CURRENT)
+				ya.manager_emit("arrow", { cand - 1 + current_folder.offset - current_folder.cursor })
+
+				next(true, { "global" })
+				return
+			end
+			
+			-- hit parent area
+			if cand > current_entry_num and cand <= (current_entry_num + parent_entry_num) then
+				local parent_folder = Folder:by_kind(Folder.PARENT)
+				ya.manager_emit("leave", {})
+				ya.manager_emit("arrow", { cand - current_entry_num - 1 + parent_folder.offset - parent_folder.cursor })
+				next(true, { "global" })
+				return		
+			end
+
+			-- hit space key
+			if SPECIAL_KEYS[cand - current_entry_num - parent_entry_num] == "<Space>" then
+				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
+				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
+				ya.manager_emit("select", { state = toggle_state })
+				ya.manager_emit("arrow", { 1 })
+			end
+
+			--never auto exit global mode
+			next(true, { "global" })
 			return
 		end
 
 		-- Step 4: select mode, allow use special key in keyjump
 		if state.type == "select" then
-			if cand <= entry_num then -- hit normal key
+			if cand <= current_entry_num then -- hit normal key
 				local folder = Folder:by_kind(Folder.CURRENT)
 				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 
@@ -291,7 +399,7 @@ return {
 			end
 
 			-- hit space key
-			if SPECIAL_KEYS[cand - entry_num] == "<Space>" then
+			if SPECIAL_KEYS[cand - current_entry_num] == "<Space>" then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state = toggle_state })
