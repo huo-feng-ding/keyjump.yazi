@@ -1,6 +1,8 @@
 -- stylua: ignore
 local SPECIAL_KEYS = {
-	"<Space>", "<Esc>"
+	"<Space>", "<Esc>","<Enter>",
+	"<Left>","<Right>","<Up>","<Down>",
+	"h","j","k","l"
 }
 
 -- stylua: ignore
@@ -12,9 +14,9 @@ local SINGLE_KEYS = {
 local CURRENT_DOUBLE_KEYS = {
 	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
-	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "gu", "gi", "go", "gh",
-	"gj", "gk", "gl", "gn", "eu", "ei", "eo", "eh", "ej", "ek", "el", "en",
-	"ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", "cu"
+	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh", 
+	"ej", "ek", "el", "en", "ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", 
+	"cu"
 }
 
 local PREVIEW_DOUBLE_KEYS = {
@@ -35,7 +37,9 @@ local PARRENT_DOUBLE_KEYS = {
 
 -- stylua: ignore
 local SPECIAL_CANDS = {
-	{ on = "<Space>" }, { on = "<Esc>" }
+	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
+	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" },{ on = "<Down>" },
+	{ on = "<h>" }, { on = "<j>" }, { on = "<k>" },{ on = "<l>" },
 }
 
 -- stylua: ignore
@@ -59,15 +63,13 @@ local CURRENT_DOUBLE_CANDS = {
 	{ on = { "d", "k" } }, { on = { "d", "l" } }, { on = { "d", "n" } },
 	{ on = { "f", "u" } }, { on = { "f", "i" } }, { on = { "f", "o" } },
 	{ on = { "f", "h" } }, { on = { "f", "j" } }, { on = { "f", "k" } },
-	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "g", "u" } },
-	{ on = { "g", "i" } }, { on = { "g", "o" } }, { on = { "g", "h" } },
-	{ on = { "g", "j" } }, { on = { "g", "k" } }, { on = { "g", "l" } },
-	{ on = { "g", "n" } }, { on = { "e", "u" } }, { on = { "e", "i" } },
-	{ on = { "e", "o" } }, { on = { "e", "h" } }, { on = { "e", "j" } },
-	{ on = { "e", "k" } }, { on = { "e", "l" } }, { on = { "e", "n" } },
-	{ on = { "r", "u" } }, { on = { "r", "i" } }, { on = { "r", "o" } },
-	{ on = { "r", "h" } }, { on = { "r", "j" } }, { on = { "r", "k" } },
-	{ on = { "r", "l" } }, { on = { "r", "n" } }, { on = { "c", "u" } }
+	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } }, 
+	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } }, 
+	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } }, 
+	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } }, 
+	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } }, 
+	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } }, 
+	{ on = { "c", "u" } }
 
 }
 
@@ -118,6 +120,13 @@ local PARENT_DOUBLE_CANDS = {
 	{ on = { "q", "p" } }, { on = { "q", "y" } }, { on = { "q", "m" } }
 
 }
+
+-- TODO: the async jump is too fast, the current folder cannot be foun
+local GO_CANDS = {
+	-- { on = { "g", "c" },       exec = "cd ~/.config",     desc = "Go to config" },
+	-- { on = { "g", "r" },       exec = "cd /",          desc = "Go to /" },
+}
+
 
 -- debug function 
 -- local function serialize(obj)
@@ -266,9 +275,22 @@ end
 
 local function next(sync, args) ya.manager_emit("plugin", { "keyjump", sync = sync, args = table.concat(args, " ") }) end
 
+local function split_yazi_cmd_arg(cmd)
+	local cmd_table = {}
+	local i = string.find(cmd, " ")
+	if i then
+	  local first = string.sub(cmd, 1, i - 1)
+	  local second = string.sub(cmd, i + 1)
+	  table.insert(cmd_table,first)
+	  table.insert(cmd_table,second)
+	  return cmd_table
+	end		
+	return nil
+end
+
 local function count_preview_files(st)
 	local folder = Folder:by_kind(Folder.CURRENT)
-	local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
+	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	if under_cursor_file.cha.is_dir then
 		local split_char = ya.target_family() == "windows" and "\\" or "/"
 		st.preview_num = count_files(cx.active.current.cwd .. split_char .. under_cursor_file.name, Preview.area.h)
@@ -381,6 +403,11 @@ return {
 				table.insert(cands, preview_cands[i])
 			end
 
+			--attach go cands to cands table
+			for i = 1, #GO_CANDS do 
+				table.insert(cands, GO_CANDS[i])
+			end
+		
 			--attach special cands to cands table
 			for i = 1, #SPECIAL_KEYS do --attach special key
 				table.insert(cands, SPECIAL_CANDS[i])
@@ -405,11 +432,46 @@ return {
 		local current_entry_num = tonumber(args[3])
 		local parent_entry_num = tonumber(args[4])
 		local preview_entry_num = tonumber(args[5])
+		local go_num = #GO_CANDS
 		local folder = Folder:by_kind(Folder.CURRENT)
 
 		-- hit esc key
-		if cand > (current_entry_num + parent_entry_num + preview_entry_num) and SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num] == "<Esc>" then
-			return
+		if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
+			local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
+			if special_key_str == "<Esc>" then
+				return
+			elseif special_key_str == "<Enter>" then
+				ya.manager_emit("open",{})
+			elseif special_key_str == "<Left>" then
+				ya.manager_emit("leave",{})
+				next(true,{state.type})
+				return
+			elseif special_key_str == "<Right>" then
+				ya.manager_emit("enter",{})
+				next(true,{state.type})
+				return
+			elseif special_key_str == "<Up>" then
+				ya.manager_emit("arrow",{"-1"})
+			elseif special_key_str == "<Down>" then
+				ya.manager_emit("arrow",{"1"})
+			elseif special_key_str == "<Space>" and (state.type == "select" or state.type == "global" or  state.type == "keep") then
+				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
+				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
+				ya.manager_emit("select", { state = toggle_state })
+				ya.manager_emit("arrow", { 1 })
+			elseif special_key_str == "h" then
+				ya.manager_emit("leave",{})
+				next(true,{state.type})
+				return
+			elseif special_key_str == "j" then
+				ya.manager_emit("arrow",{"1"})
+			elseif special_key_str == "k" then
+				ya.manager_emit("arrow",{"-1"})
+			elseif special_key_str == "l" then
+				ya.manager_emit("enter",{})
+				next(true,{state.type})
+				return
+			end
 		end
 
 		-- apply global mode
@@ -442,12 +504,14 @@ return {
 				return		
 			end
 
-			-- hit space key
-			if SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num] == "<Space>" then
-				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
-				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
-				ya.manager_emit("select", { state = toggle_state })
-				ya.manager_emit("arrow", { 1 })
+			-- hit go 
+			if cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
+ 				local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num 
+				
+				local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
+				ya.manager_emit(cmd[1],{cmd[2]})  -- Bug: async action may let 303 unkonw under cursor file
+				next(true, { "global" })
+				return		
 			end
 
 			--never auto exit global mode
@@ -463,14 +527,6 @@ return {
 
 				next(true, { "select" })
 				return
-			end
-
-			-- hit space key
-			if SPECIAL_KEYS[cand - current_entry_num] == "<Space>" then
-				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
-				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
-				ya.manager_emit("select", { state = toggle_state })
-				ya.manager_emit("arrow", { 1 })
 			end
 
 			--never auto exit select mode
