@@ -1,6 +1,6 @@
 -- stylua: ignore
 local SPECIAL_KEYS = {
-	"<Space>","<Esc>"
+	"<Space>", "<Esc>"
 }
 
 -- stylua: ignore
@@ -9,18 +9,33 @@ local SINGLE_KEYS = {
 	"u", "m", "f", "g", "w", "v", "k", "j", "x", "z", "y", "q"
 }
 -- stylua: ignore
-local DOUBLE_KEYS = {
+local CURRENT_DOUBLE_KEYS = {
 	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
 	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "gu", "gi", "go", "gh",
 	"gj", "gk", "gl", "gn", "eu", "ei", "eo", "eh", "ej", "ek", "el", "en",
-	"ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", "cu", "ci", "co", "ch",
-	"cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", "wk", "wl", "wn"
+	"ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", "cu"
+}
+
+local PREVIEW_DOUBLE_KEYS = {
+	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", 
+	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu", 
+	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj", 
+	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu", 
+	"bi", "bo", "bh", "bj", "bk", "bl"
+}
+
+local PARRENT_DOUBLE_KEYS = { 
+	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am", 
+	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm", 
+	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm", 
+	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm", 
+	"zp", "zy", "zm", "qp", "qy", "qm"
 }
 
 -- stylua: ignore
 local SPECIAL_CANDS = {
-	{ on = "<Space>" },{ on = "<Esc>" }
+	{ on = "<Space>" }, { on = "<Esc>" }
 }
 
 -- stylua: ignore
@@ -33,7 +48,7 @@ local SIGNAL_CANDS = {
 	{ on = "q" },
 }
 -- stylua: ignore
-local DOUBLE_CANDS = {
+local CURRENT_DOUBLE_CANDS = {
 	{ on = { "a", "u" } }, { on = { "a", "i" } }, { on = { "a", "o" } },
 	{ on = { "a", "h" } }, { on = { "a", "j" } }, { on = { "a", "k" } },
 	{ on = { "a", "l" } }, { on = { "a", "n" } }, { on = { "s", "u" } },
@@ -52,17 +67,69 @@ local DOUBLE_CANDS = {
 	{ on = { "e", "k" } }, { on = { "e", "l" } }, { on = { "e", "n" } },
 	{ on = { "r", "u" } }, { on = { "r", "i" } }, { on = { "r", "o" } },
 	{ on = { "r", "h" } }, { on = { "r", "j" } }, { on = { "r", "k" } },
-	{ on = { "r", "l" } }, { on = { "r", "n" } }, { on = { "c", "u" } },
+	{ on = { "r", "l" } }, { on = { "r", "n" } }, { on = { "c", "u" } }
+
+}
+
+
+-- stylua: ignore
+local PREVIEW_DOUBLE_CANDS = {
+
 	{ on = { "c", "i" } }, { on = { "c", "o" } }, { on = { "c", "h" } },
 	{ on = { "c", "j" } }, { on = { "c", "k" } }, { on = { "c", "l" } },
 	{ on = { "c", "n" } }, { on = { "w", "u" } }, { on = { "w", "i" } },
 	{ on = { "w", "o" } }, { on = { "w", "h" } }, { on = { "w", "j" } },
 	{ on = { "w", "k" } }, { on = { "w", "l" } }, { on = { "w", "n" } },
+	{ on = { "t", "u" } }, { on = { "t", "i" } }, { on = { "t", "o" } },
+	{ on = { "t", "h" } }, { on = { "t", "j" } }, { on = { "t", "k" } },
+	{ on = { "t", "l" } }, { on = { "t", "n" } }, { on = { "v", "u" } },
+	{ on = { "v", "i" } }, { on = { "v", "o" } }, { on = { "v", "h" } },
+	{ on = { "v", "j" } }, { on = { "v", "k" } }, { on = { "v", "l" } },
+	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
+	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
+	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
+	{ on = { "z", "u" } }, { on = { "z", "i" } }, { on = { "z", "o" } },
+	{ on = { "z", "h" } }, { on = { "z", "j" } }, { on = { "z", "k" } },
+	{ on = { "z", "l" } }, { on = { "z", "n" } }, { on = { "b", "u" } },
+	{ on = { "b", "i" } }, { on = { "b", "o" } }, { on = { "b", "h" } },
+	{ on = { "b", "j" } }, { on = { "b", "k" } }, { on = { "b", "l" } }
+
+}
+
+local PARENT_DOUBLE_CANDS = {
+
+	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
+	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
+	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
+	{ on = { "a", "p" } }, { on = { "a", "y" } }, { on = { "a", "m" } },
+	{ on = { "f", "p" } }, { on = { "f", "y" } }, { on = { "f", "m" } },
+	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
+	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
+	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
+	{ on = { "g", "p" } }, { on = { "g", "y" } }, { on = { "g", "m" } },
+	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
+	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
+	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
+	{ on = { "x", "p" } }, { on = { "x", "y" } }, { on = { "x", "m" } },
+	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
+	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
+	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
+	{ on = { "z", "p" } }, { on = { "z", "y" } }, { on = { "z", "m" } },
+	{ on = { "q", "p" } }, { on = { "q", "y" } }, { on = { "q", "m" } }
+
 }
 
 -- FIXME: refactor this to avoid the loop
-local function rel_position(file)
-	for i, f in ipairs(Folder:by_kind(Folder.CURRENT).window) do
+local function rel_position(file,view)
+
+	local data
+	if view == "current" then
+		data = Folder:by_kind(Folder.CURRENT).window
+	elseif view == "parent" then
+		data = Folder:by_kind(Folder.PARENT).window
+	end
+
+	for i, f in ipairs(data) do
 		if f == file then
 			return i
 		end
@@ -80,7 +147,7 @@ local function count_files(url, max)
 		cmd = cmd .. ya.quote(tostring(url)) .. " | wc -l"
 	end
 
-	if ya.target_family() == "windows" then  
+	if ya.target_family() == "windows" then
 		local i, handle = 0, io.popen(cmd)
 		for _ in handle:lines() do
 			i = i + 1
@@ -97,7 +164,7 @@ local function count_files(url, max)
 
 		if num == nil then
 			ya.err("caculate file num error, target folder: " .. ya.quote(tostring(url)))
-		end		
+		end
 
 		if num > max then
 			return max
@@ -116,13 +183,33 @@ local function toggle_ui(st)
 
 	st.icon, st.mode = Folder.icon, Status.mode
 	Folder.icon = function(self, file)
-		local pos = rel_position(file)
-		if not pos then
-			return st.icon(self, file)
-		elseif st.num > #SINGLE_KEYS then
-			return ui.Span(DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+
+		if state.type == global then
+			local pos = rel_position(file,"current")
+			if not pos then
+				local pos = rel_position(file,"parent")
+				if not pos then
+					return st.icon(self, file)
+				else
+					return ui.Span(PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				end
+			else
+				if st.num > #SINGLE_KEYS then
+					return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				else
+					return ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")	
+				end			
+			end
+		
 		else
-			return ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+			local pos = rel_position(file,"current")
+			if not pos then
+				return st.icon(self, file)
+			elseif st.num > #SINGLE_KEYS then
+				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+			else
+				return ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+			end
 		end
 	end
 	Status.mode = function(self)
@@ -160,23 +247,22 @@ return {
 		if action == "_read" then
 			local cands, num = nil, tonumber(args[2])
 			if num > #SINGLE_KEYS then
-				cands = { table.unpack(DOUBLE_CANDS, 1, num) }
+				cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, num) }
 			else
 				cands = { table.unpack(SIGNAL_CANDS, 1, num) }
 			end
 
-			for i = 1, #SPECIAL_KEYS do --attach special key 
+			for i = 1, #SPECIAL_KEYS do --attach special key
 				table.insert(cands, SPECIAL_CANDS[i])
 			end
 
 			local cand = ya.which { cands = cands, silent = true }
 
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
-				return next(false, { "_read", num})
+				return next(false, { "_read", num })
 			else
-				return next(true, { "_apply", cand, num} )
+				return next(true, { "_apply", cand, num })
 			end
-			
 		end
 
 		-- Step 3: Restore the UI we patched in step 1, once we read the candidate
@@ -186,11 +272,11 @@ return {
 		end
 
 		local cand = tonumber(args[2])
-		local entry_num = tonumber(args[3]) 
+		local entry_num = tonumber(args[3])
 		local folder = Folder:by_kind(Folder.CURRENT)
 
 		-- hit esc key
-		if cand > entry_num and SPECIAL_KEYS[cand - entry_num] == "<Esc>" then 
+		if cand > entry_num and SPECIAL_KEYS[cand - entry_num] == "<Esc>" then
 			return
 		end
 
@@ -206,9 +292,9 @@ return {
 
 			-- hit space key
 			if SPECIAL_KEYS[cand - entry_num] == "<Space>" then
-				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1 ]
+				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
-				ya.manager_emit("select", { state=toggle_state })
+				ya.manager_emit("select", { state = toggle_state })
 				ya.manager_emit("arrow", { 1 })
 			end
 
@@ -216,12 +302,12 @@ return {
 			next(true, { "select" })
 			return
 		end
-	
+
 		-- arrow in keep mode and normal mode
 		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 
 		-- Step 5: keep mode, will auto enter when select folder and will auto exit when select file
-		if state.type == "keep" and folder.window[cand].cha.is_dir then 
+		if state.type == "keep" and folder.window[cand].cha.is_dir then
 			local folder = Folder:by_kind(Folder.CURRENT)
 			ya.manager_emit("enter", {})
 			next(true, { "keep" })
