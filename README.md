@@ -5,6 +5,14 @@ A Yazi plugin which like flash.nvim in Neovim, allow use key char to precise sel
 > [!NOTE]
 > The latest main branch of Yazi is required at the moment.
 
+## Global mode
+
+Global mode, you can jump to everywhere.not only current window.
+you also can use "Space" key to select/unselect item, and press "Esc" to exit.
+
+https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/0a7a44cd-a91b-4377-9787-f4babb0303bf
+
+
 ## Keep mode
 
 keep mode, when select a dir, it will auto enter and keep in "keyjump" mode.
@@ -24,7 +32,6 @@ https://github.com/DreamMaoMao/keyjump/assets/30348075/6ba722ce-8b55-4c80-ac81-b
 Select mode, you can use "Space" key to select/unselect item, and press "Esc" to exit.
 
 https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9598-fe9ef9098acc
-
 
 ## Install
 
@@ -68,6 +75,12 @@ exec = "plugin keyjump --sync --args=select"
 desc = "Keyjump (Select mode)"
 ```
 
+```toml
+[[manager.prepend_keymap]]
+on   = [ "i" ]
+exec = "plugin keyjump --sync --args=global"
+desc = "Keyjump (Global mode)"
+```
 
 When you see some character(singal character or double character) in left of the entry.
 Press the key of the character will jump to the corresponding entry
