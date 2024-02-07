@@ -258,9 +258,9 @@ local function toggle_ui(st)
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " ") or ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. CURRENT_DOUBLE_KEYS[pos] .. " ") or ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			else
-				return st.type == nil and ui.Span(" " .. SINGLE_KEYS[pos]  .. " ") or ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span( " " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ") or ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			end
 		end
 	end
