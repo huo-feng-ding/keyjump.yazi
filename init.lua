@@ -333,7 +333,7 @@ return {
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, nil, nil })
+			return next(false, { "_read", state.current_num, "0", "0" })
 		end
 
 		-- enter global mode
@@ -374,14 +374,14 @@ return {
 		-- Step 2: Waiting to read the candidate from the user
 		if action == "_read" then
 			local current_num = tonumber(args[2])
-			local parent_num = tonumber(args[3])
-			local preview_num = tonumber(args[4])
+			local parent_num = tonumber(args[3] ~= nil and args[3] or "0")
+			local preview_num = tonumber(args[4] ~= nil and args[4] or "0")
 			local current_cands,parent_cands,preview_cands,cands = {},{},{},{}
 
 			-- generate cands of entry of current window
 			if current_num ==0 then
 				current_cands = {}
-			elseif args[3] ~= nil or args[4] ~= nil then -- global mode disable signal key
+			elseif parent_num ~= 0 or preview_num ~= 0 then -- global mode disable signal key
 				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
 			elseif current_num > #SINGLE_KEYS then
 				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
@@ -432,7 +432,12 @@ return {
 
 			local cand = ya.which { cands = cands, silent = true }
 
+			if cand ~= nil then
+				ya.err(tonumber(cand))
+			end
+			
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
+				ya.err("shenmegui")
 				return next(false, { "_read", current_num, parent_num, preview_num })
 			else
 				return next(true, { "_apply", cand, current_num, parent_num, preview_num })
@@ -565,6 +570,7 @@ return {
 				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 			else
 				next(true, { nil})
+				return
 			end
 		end
 
@@ -573,6 +579,7 @@ return {
 			local folder = Folder:by_kind(Folder.CURRENT)
 			ya.manager_emit("enter", {})
 			next(true, { "keep" })
+			return
 		end
 
 		-- normal mode exit
