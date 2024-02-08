@@ -98,6 +98,12 @@ on   = [ "i" ]
 exec = "plugin keyjump --sync --args=global"
 desc = "Keyjump (Global mode)"
 ```
+```toml
+[[manager.prepend_keymap]]
+on   = [ "i" ]
+exec = "plugin keyjump --sync --args='global once'"
+desc = "Keyjump (once Global mode)"
+```
 
 When you see some character(singal character or double character) in left of the entry.
 Press the key of the character will jump to the corresponding entry

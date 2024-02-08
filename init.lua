@@ -305,6 +305,13 @@ local function count_preview_files(st)
 	end
 end
 
+local function again_global(st) 
+	if st.times == "once" then
+		return
+	end
+	next(true, { "global" })
+end 
+
 return {
 	entry = function(_, args)
 		local action = args[1]
@@ -329,6 +336,8 @@ return {
 
 		-- enter global mode
 		if action == "global" then
+			-- "once" or nil,nil means to don't auto exit
+			state.times = args[2]
 			-- caculate file numbers of current window 
 			state.current_num = #Folder:by_kind(Folder.CURRENT).window
 			if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
@@ -491,7 +500,7 @@ return {
 				local current_folder = Folder:by_kind(Folder.CURRENT)
 				ya.manager_emit("arrow", { cand - 1 + current_folder.offset - current_folder.cursor })
 
-				next(true, { "global" })
+				again_global(state)
 				return
 			end
 			
@@ -500,7 +509,7 @@ return {
 				local parent_folder = Folder:by_kind(Folder.PARENT)
 				ya.manager_emit("leave", {})
 				ya.manager_emit("arrow", { cand - current_entry_num - 1 + parent_folder.offset - parent_folder.cursor })
-				next(true, { "global" })
+				again_global(state)
 				return		
 			end
 
@@ -509,7 +518,7 @@ return {
 				local preview_folder = Folder:by_kind(Folder.PREVIEW)
 				ya.manager_emit("enter", {})
 				ya.manager_emit("arrow", { cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor })
-				next(true, { "global" })
+				again_global(state)
 				return		
 			end
 
@@ -519,12 +528,12 @@ return {
 				
 				local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
 				ya.manager_emit(cmd[1],{cmd[2]})  -- Bug: async action may let 303 unkonw under cursor file
-				next(true, { "global" })
+				again_global(state)
 				return		
 			end
 
 			--never auto exit global mode
-			next(true, { "global" })
+			again_global(state)
 			return
 		end
 
