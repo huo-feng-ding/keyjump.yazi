@@ -2,7 +2,8 @@
 local SPECIAL_KEYS = {
 	"<Space>", "<Esc>","<Enter>",
 	"<Left>","<Right>","<Up>","<Down>",
-	"h","j","k","l"
+	"h","j","k","l",
+	"J","K"
 }
 
 -- stylua: ignore
@@ -19,6 +20,7 @@ local CURRENT_DOUBLE_KEYS = {
 	"cu"
 }
 
+-- stylua: ignore
 local PREVIEW_DOUBLE_KEYS = {
 	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", 
 	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu", 
@@ -27,6 +29,7 @@ local PREVIEW_DOUBLE_KEYS = {
 	"bi", "bo", "bh", "bj", "bk", "bl"
 }
 
+-- stylua: ignore
 local PARRENT_DOUBLE_KEYS = { 
 	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am", 
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm", 
@@ -39,7 +42,8 @@ local PARRENT_DOUBLE_KEYS = {
 local SPECIAL_CANDS = {
 	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
 	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" },{ on = "<Down>" },
-	{ on = "<h>" }, { on = "<j>" }, { on = "<k>" },{ on = "<l>" },
+	{ on = "h" }, { on = "j" }, { on = "k" },{ on = "l" },
+	{ on = "J" }, { on = "K" }
 }
 
 -- stylua: ignore
@@ -98,6 +102,7 @@ local PREVIEW_DOUBLE_CANDS = {
 
 }
 
+-- stylua: ignore
 local PARENT_DOUBLE_CANDS = {
 
 	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
@@ -121,7 +126,7 @@ local PARENT_DOUBLE_CANDS = {
 
 }
 
--- TODO: the async jump is too fast, the current folder cannot be foun
+-- TODO: the async jump is too fast, the current folder cannot be found
 local GO_CANDS = {
 	-- { on = { "g", "c" },       exec = "cd ~/.config",     desc = "Go to config" },
 	-- { on = { "g", "r" },       exec = "cd /",          desc = "Go to /" },
@@ -436,7 +441,7 @@ return {
 		local go_num = #GO_CANDS
 		local folder = Folder:by_kind(Folder.CURRENT)
 
-		-- hit esc key
+		-- hit specail key
 		if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 			local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 			if special_key_str == "<Esc>" then
@@ -471,7 +476,10 @@ return {
 			elseif special_key_str == "l" then
 				ya.manager_emit("enter",{})
 				next(true,{state.type})
-				return
+			elseif special_key_str == "J" then
+				ya.manager_emit("arrow",{"5"})
+			elseif special_key_str == "K" then
+				ya.manager_emit("arrow",{"-5"})
 			end
 		end
 

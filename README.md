@@ -45,6 +45,8 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 "l" : enter folder (global)
 "k" : arrow up 1 entry (global)
 "j" : arrow down 1 entry (global)
+"K" : arrow up 5 entry (global)
+"J" : arrow down 5 entry (global)
 ```
 
 
