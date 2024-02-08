@@ -4,13 +4,14 @@ local SPECIAL_KEYS = {
 	"<Left>","<Right>","<Up>","<Down>",
 	"h","j","k","l",
 	"J","K",
-	"<A-j>","<A-k>"
+	"<A-j>","<A-k>",
+	"q"
 }
 
 -- stylua: ignore
 local SINGLE_KEYS = {
 	"p", "b", "e", "t", "a", "o", "i", "n", "s", "r", "h", "l", "d", "c",
-	"u", "m", "f", "g", "w", "v", "k", "j", "x", "z", "y", "q"
+	"u", "m", "f", "g", "w", "v", "k", "j", "x", "z", "y"
 }
 -- stylua: ignore
 local CURRENT_DOUBLE_KEYS = {
@@ -23,20 +24,18 @@ local CURRENT_DOUBLE_KEYS = {
 
 -- stylua: ignore
 local PREVIEW_DOUBLE_KEYS = {
-	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", 
-	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu", 
-	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj", 
-	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu", 
-	"bi", "bo", "bh", "bj", "bk", "bl"
+	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
+	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
+	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
+	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu",
 }
 
 -- stylua: ignore
 local PARRENT_DOUBLE_KEYS = { 
-	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am", 
-	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm", 
-	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm", 
-	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm", 
-	"zp", "zy", "zm", "qp", "qy", "qm"
+	"bn", "bi", "bo", "bh", "bj", "bk", "bl", "ap", "ay", "am", "fp", "fy",
+	"fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm", "rp", "ry",
+	"rm", "cp", "cy", "cm", "wp", "wy", "wm", "xp", "xy", "xm", "tp", "ty",
+	"tm", "vp", "vy", "vm", "bp", "by", "bm", "zp", "zy", "zm"
 }
 
 -- stylua: ignore
@@ -46,6 +45,7 @@ local SPECIAL_CANDS = {
 	{ on = "h" }, { on = "j" }, { on = "k" },{ on = "l" },
 	{ on = "J" }, { on = "K" },
 	{ on = "<A-j>" }, { on = "<A-k>" },
+	{ on = "q" },
 }
 
 -- stylua: ignore
@@ -55,7 +55,6 @@ local SIGNAL_CANDS = {
 	{ on = "h" }, { on = "l" }, { on = "d" }, { on = "c" }, { on = "u" },
 	{ on = "m" }, { on = "f" }, { on = "g" }, { on = "w" }, { on = "v" },
 	{ on = "k" }, { on = "j" }, { on = "x" }, { on = "z" }, { on = "y" },
-	{ on = "q" },
 }
 -- stylua: ignore
 local CURRENT_DOUBLE_CANDS = {
@@ -99,32 +98,30 @@ local PREVIEW_DOUBLE_CANDS = {
 	{ on = { "z", "u" } }, { on = { "z", "i" } }, { on = { "z", "o" } },
 	{ on = { "z", "h" } }, { on = { "z", "j" } }, { on = { "z", "k" } },
 	{ on = { "z", "l" } }, { on = { "z", "n" } }, { on = { "b", "u" } },
-	{ on = { "b", "i" } }, { on = { "b", "o" } }, { on = { "b", "h" } },
-	{ on = { "b", "j" } }, { on = { "b", "k" } }, { on = { "b", "l" } }
+
 
 }
 
 -- stylua: ignore
 local PARENT_DOUBLE_CANDS = {
 
-	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
-	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
-	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
-	{ on = { "a", "p" } }, { on = { "a", "y" } }, { on = { "a", "m" } },
-	{ on = { "f", "p" } }, { on = { "f", "y" } }, { on = { "f", "m" } },
-	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
-	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
-	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
-	{ on = { "g", "p" } }, { on = { "g", "y" } }, { on = { "g", "m" } },
-	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
-	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
-	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
-	{ on = { "x", "p" } }, { on = { "x", "y" } }, { on = { "x", "m" } },
-	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
-	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
-	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
-	{ on = { "z", "p" } }, { on = { "z", "y" } }, { on = { "z", "m" } },
-	{ on = { "q", "p" } }, { on = { "q", "y" } }, { on = { "q", "m" } }
+	{ on = { "b", "n" } }, { on = { "b", "i" } }, { on = { "b", "o" } }, 
+	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } }, 
+	{ on = { "b", "l" } }, { on = { "a", "p" } }, { on = { "a", "y" } }, 
+	{ on = { "a", "m" } }, { on = { "f", "p" } }, { on = { "f", "y" } }, 
+	{ on = { "f", "m" } }, { on = { "e", "p" } }, { on = { "e", "y" } }, 
+	{ on = { "e", "m" } }, { on = { "s", "p" } }, { on = { "s", "y" } }, 
+	{ on = { "s", "m" } }, { on = { "d", "p" } }, { on = { "d", "y" } }, 
+	{ on = { "d", "m" } }, { on = { "r", "p" } }, { on = { "r", "y" } }, 
+	{ on = { "r", "m" } }, { on = { "c", "p" } }, { on = { "c", "y" } }, 
+	{ on = { "c", "m" } }, { on = { "w", "p" } }, { on = { "w", "y" } }, 
+	{ on = { "w", "m" } }, { on = { "x", "p" } }, { on = { "x", "y" } }, 
+	{ on = { "x", "m" } }, { on = { "t", "p" } }, { on = { "t", "y" } }, 
+	{ on = { "t", "m" } }, { on = { "v", "p" } }, { on = { "v", "y" } }, 
+	{ on = { "v", "m" } }, { on = { "b", "p" } }, { on = { "b", "y" } }, 
+	{ on = { "b", "m" } }, { on = { "z", "p" } }, { on = { "z", "y" } }, 
+	{ on = { "z", "m" } },
+
 
 }
 
@@ -455,7 +452,7 @@ return {
 		-- hit specail key
 		if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 			local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
-			if special_key_str == "<Esc>" then
+			if special_key_str == "<Esc>" or special_key_str == "q"  then
 				return
 			elseif special_key_str == "<Enter>" then
 				ya.manager_emit("open",{})

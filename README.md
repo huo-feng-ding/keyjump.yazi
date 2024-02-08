@@ -34,6 +34,7 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 ## special key
 ```
 "Esc"  : exit keyjump (global,select,keep,normal)
+"q"  : exit keyjump (global,select,keep,normal)
 
 "Enter" : open (global,select,keep,normal)
 "Space" : toggle select (global,select,keep,normal)
