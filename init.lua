@@ -471,7 +471,7 @@ return {
 				ya.manager_emit("arrow",{"-1"})
 			elseif special_key_str == "<Down>" then
 				ya.manager_emit("arrow",{"1"})
-			elseif special_key_str == "<Space>" and (state.type == "select" or state.type == "global" or  state.type == "keep") then
+			elseif special_key_str == "<Space>" then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state = toggle_state })
@@ -560,7 +560,13 @@ return {
 		end
 
 		-- apply keep mode and normal mode
-		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
+		if state.type == "keep" or not state.type then
+			if cand <= current_entry_num then -- don't hit special key cand
+				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
+			else
+				next(true, { nil})
+			end
+		end
 
 		-- keep mode will auto enter when select folder and continue keep mode
 		if state.type == "keep" and folder.window[cand].cha.is_dir then
