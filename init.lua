@@ -432,12 +432,7 @@ return {
 
 			local cand = ya.which { cands = cands, silent = true }
 
-			if cand ~= nil then
-				ya.err(tonumber(cand))
-			end
-			
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
-				ya.err("shenmegui")
 				return next(false, { "_read", current_num, parent_num, preview_num })
 			else
 				return next(true, { "_apply", cand, current_num, parent_num, preview_num })
@@ -569,7 +564,7 @@ return {
 			if cand <= current_entry_num then -- don't hit special key cand
 				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 			else
-				next(true, { nil})
+				next(true, {state.type})
 				return
 			end
 		end
