@@ -34,19 +34,24 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 ## special key
 ```
 "Esc"  : exit keyjump (global,select,keep,normal)
-"Enter" : open (global,select,keep,normal)
+
+"Enter" : open (global,select,keep)
 "Space" : toggle select (global,select,keep)
-"Left" : leave to parent folder (global,select,keep,normal)
-"Right" : enter folder (global,select,keep,normal)
-"Up" : arrow up 1 entry (global,select,keep,normal)
-"Down" : arrow down 1 entry (global,select,keep,normal)
+"Left" : leave to parent folder (global,select,keep)
+"Right" : enter folder (global,select,keep)
+"Up" : arrow up 1 entry (global,select,keep)
+"Down" : arrow down 1 entry (global,select,keep)
+"alt+k" : seek up 5 entry (global,select,keep)
+"alt+j" : seek down 5 entry (global,select,keep)
+"K" : arrow up 5 entry (global,select,keep)
+"J" : arrow down 5 entry (global,select,keepl)
 
 "h" : leave to parent folder (global)
 "l" : enter folder (global)
 "k" : arrow up 1 entry (global)
 "j" : arrow down 1 entry (global)
-"K" : arrow up 5 entry (global)
-"J" : arrow down 5 entry (global)
+
+
 ```
 
 

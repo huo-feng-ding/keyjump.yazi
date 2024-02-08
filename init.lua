@@ -3,7 +3,8 @@ local SPECIAL_KEYS = {
 	"<Space>", "<Esc>","<Enter>",
 	"<Left>","<Right>","<Up>","<Down>",
 	"h","j","k","l",
-	"J","K"
+	"J","K",
+	"<A-j>","<A-k>"
 }
 
 -- stylua: ignore
@@ -43,7 +44,8 @@ local SPECIAL_CANDS = {
 	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
 	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" },{ on = "<Down>" },
 	{ on = "h" }, { on = "j" }, { on = "k" },{ on = "l" },
-	{ on = "J" }, { on = "K" }
+	{ on = "J" }, { on = "K" },
+	{ on = "<A-j>" }, { on = "<A-k>" },
 }
 
 -- stylua: ignore
@@ -474,15 +476,15 @@ return {
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state = toggle_state })
 				ya.manager_emit("arrow", { 1 })
-			elseif special_key_str == "h" then
+			elseif special_key_str == "h" and state.type == "global" then
 				ya.manager_emit("leave",{})
 				next(true,{state.type})
 				return
-			elseif special_key_str == "j" then
+			elseif special_key_str == "j" and state.type == "global" then
 				ya.manager_emit("arrow",{"1"})
-			elseif special_key_str == "k" then
+			elseif special_key_str == "k" and state.type == "global" then
 				ya.manager_emit("arrow",{"-1"})
-			elseif special_key_str == "l" then
+			elseif special_key_str == "l" and state.type == "global" then
 				ya.manager_emit("enter",{})
 				next(true,{state.type})
 				return
@@ -490,6 +492,10 @@ return {
 				ya.manager_emit("arrow",{"5"})
 			elseif special_key_str == "K" then
 				ya.manager_emit("arrow",{"-5"})
+			elseif special_key_str == "<A-j>" then
+				ya.manager_emit("seek",{"5"})
+			elseif special_key_str == "<A-k>" then
+				ya.manager_emit("seek",{"-5"})
 			end
 		end
 
