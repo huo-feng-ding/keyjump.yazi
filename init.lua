@@ -485,6 +485,7 @@ return {
 			elseif special_key_str == "l" then
 				ya.manager_emit("enter",{})
 				next(true,{state.type})
+				return
 			elseif special_key_str == "J" then
 				ya.manager_emit("arrow",{"5"})
 			elseif special_key_str == "K" then
