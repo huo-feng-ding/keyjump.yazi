@@ -218,7 +218,7 @@ local function count_files(url, max)
 		cmd = cmd .. ya.quote(tostring(url))
 	else
 		cmd = cx.active.conf.show_hidden and "ls -A  " or "ls "
-		cmd = cmd .. ya.quote(tostring(url)) .. " | wc -l"
+		cmd = "test -r " .. ya.quote(tostring(url)) .."&&".. cmd .. ya.quote(tostring(url)) .. " | wc -l"
 	end
 
 	if ya.target_family() == "windows" then
@@ -231,13 +231,14 @@ local function count_files(url, max)
 		end
 		handle:close()
 		return i
-	else --TODO: find better way to do this
-		local f = io.popen(cmd) -- when the directory no permission, may be exception 
-		local num = tonumber(f:read("*all"))
+	else
+		local f = io.popen(cmd)
+		local output = f:read("*all")
+		local num = tonumber(output)
 		f:close()
 
 		if num == nil then
-			ya.err("caculate file num error, target folder: " .. ya.quote(tostring(url)))
+			return 0
 		end
 
 		if num > max then
@@ -344,7 +345,7 @@ return {
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, "0", "0" })
+			return next(false, { "_read", state.current_num, "0", "0" ,state.type})
 		end
 
 		-- enter global mode
@@ -379,7 +380,7 @@ return {
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num })
+			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num,state.type })
 		end
 
 		-- Step 2: Waiting to read the candidate from the user
@@ -387,12 +388,13 @@ return {
 			local current_num = tonumber(args[2])
 			local parent_num = tonumber(args[3] ~= nil and args[3] or "0")
 			local preview_num = tonumber(args[4] ~= nil and args[4] or "0")
+			local type = args[5]
 			local current_cands, parent_cands, preview_cands, cands = {}, {}, {}, {}
 
 			-- generate cands of entry of current window
 			if current_num == 0 then
 				current_cands = {}
-			elseif parent_num ~= 0 or preview_num ~= 0 then -- global mode disable signal key
+			elseif type == "global" then -- global mode disable signal key
 				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
 			elseif current_num > #SINGLE_KEYS then
 				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
@@ -444,9 +446,9 @@ return {
 			local cand = ya.which { cands = cands, silent = true }
 
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
-				return next(false, { "_read", current_num, parent_num, preview_num })
+				return next(false, { "_read", current_num, parent_num, preview_num,type })
 			else
-				return next(true, { "_apply", cand, current_num, parent_num, preview_num })
+				return next(true, { "_apply", cand, current_num, parent_num, preview_num,type })
 			end
 		end
 
@@ -481,33 +483,51 @@ return {
 				return
 			elseif special_key_str == "<Up>" then
 				ya.manager_emit("arrow", { "-1" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "<Down>" then
 				ya.manager_emit("arrow", { "1" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "<Space>" then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state = toggle_state })
 				ya.manager_emit("arrow", { 1 })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "h" and state.type == "global" then
 				ya.manager_emit("leave", {})
 				next(true, { state.type })
 				return
 			elseif special_key_str == "j" and state.type == "global" then
 				ya.manager_emit("arrow", { "1" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "k" and state.type == "global" then
 				ya.manager_emit("arrow", { "-1" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "l" and state.type == "global" then
 				ya.manager_emit("enter", {})
 				next(true, { state.type })
 				return
 			elseif special_key_str == "J" then
 				ya.manager_emit("arrow", { "5" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "K" then
 				ya.manager_emit("arrow", { "-5" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "<A-j>" then
 				ya.manager_emit("seek", { "5" })
+				next(true, { state.type })
+				return
 			elseif special_key_str == "<A-k>" then
 				ya.manager_emit("seek", { "-5" })
+				next(true, { state.type })
+				return
 			end
 		end
 
@@ -517,7 +537,6 @@ return {
 			if cand <= current_entry_num then -- hit normal key
 				local current_folder = Folder:by_kind(Folder.CURRENT)
 				ya.manager_emit("arrow", { cand - 1 + current_folder.offset - current_folder.cursor })
-
 				again_global(state)
 				return
 			end
@@ -573,12 +592,7 @@ return {
 
 		-- apply keep mode and normal mode
 		if state.type == "keep" or not state.type then
-			if cand <= current_entry_num then -- don't hit special key cand
-				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
-			else
-				next(true, { state.type })
-				return
-			end
+			ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 		end
 
 		-- keep mode will auto enter when select folder and continue keep mode
