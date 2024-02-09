@@ -1,10 +1,10 @@
 -- stylua: ignore
 local SPECIAL_KEYS = {
-	"<Space>", "<Esc>","<Enter>",
-	"<Left>","<Right>","<Up>","<Down>",
-	"h","j","k","l",
-	"J","K",
-	"<A-j>","<A-k>"
+	"<Space>", "<Esc>", "<Enter>",
+	"<Left>", "<Right>", "<Up>", "<Down>",
+	"h", "j", "k", "l",
+	"J", "K",
+	"<A-j>", "<A-k>"
 }
 
 -- stylua: ignore
@@ -16,34 +16,34 @@ local SINGLE_KEYS = {
 local CURRENT_DOUBLE_KEYS = {
 	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
-	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh", 
-	"ej", "ek", "el", "en", "ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn", 
+	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh",
+	"ej", "ek", "el", "en", "ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn",
 	"cu"
 }
 
 -- stylua: ignore
 local PREVIEW_DOUBLE_KEYS = {
-	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj", 
-	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu", 
-	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj", 
-	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu", 
+	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
+	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
+	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
+	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu",
 	"bi", "bo", "bh", "bj", "bk", "bl"
 }
 
 -- stylua: ignore
-local PARRENT_DOUBLE_KEYS = { 
-	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am", 
-	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm", 
-	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm", 
-	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm", 
+local PARRENT_DOUBLE_KEYS = {
+	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
+	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
+	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
+	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
 	"zp", "zy", "zm", "qp", "qy", "qm"
 }
 
 -- stylua: ignore
 local SPECIAL_CANDS = {
 	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
-	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" },{ on = "<Down>" },
-	{ on = "h" }, { on = "j" }, { on = "k" },{ on = "l" },
+	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" }, { on = "<Down>" },
+	{ on = "h" }, { on = "j" }, { on = "k" }, { on = "l" },
 	{ on = "J" }, { on = "K" },
 	{ on = "<A-j>" }, { on = "<A-k>" },
 }
@@ -69,12 +69,12 @@ local CURRENT_DOUBLE_CANDS = {
 	{ on = { "d", "k" } }, { on = { "d", "l" } }, { on = { "d", "n" } },
 	{ on = { "f", "u" } }, { on = { "f", "i" } }, { on = { "f", "o" } },
 	{ on = { "f", "h" } }, { on = { "f", "j" } }, { on = { "f", "k" } },
-	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } }, 
-	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } }, 
-	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } }, 
-	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } }, 
-	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } }, 
-	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } }, 
+	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } },
+	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } },
+	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } },
+	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } },
+	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } },
+	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } },
 	{ on = { "c", "u" } }
 
 }
@@ -135,37 +135,37 @@ local GO_CANDS = {
 }
 
 
--- debug function 
+-- debug function
 -- local function serialize(obj)
---     local lua = ""  
---     local t = type(obj)  
---     if t == "number" then  
---         lua = lua .. obj  
---     elseif t == "boolean" then  
---         lua = lua .. tostring(obj)  
---     elseif t == "string" then  
---         lua = lua .. string.format("%q", obj)  
---     elseif t == "table" then  
---         lua = lua .. "{"  
---         for k, v in pairs(obj) do  
---             lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","  
---         end  
---         local metatable = getmetatable(obj)  
---         if metatable ~= nil and type(metatable.__index) == "table" then  
---             for k, v in pairs(metatable.__index) do  
---                 lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","  
---             end  
---         end  
---         lua = lua .. "}"  
---     elseif t == "nil" then  
---         return nil  
---     else  
---         error("can not serialize a " .. t .. " type.")  
---     end  
---     return lua  
+--     local lua = ""
+--     local t = type(obj)
+--     if t == "number" then
+--         lua = lua .. obj
+--     elseif t == "boolean" then
+--         lua = lua .. tostring(obj)
+--     elseif t == "string" then
+--         lua = lua .. string.format("%q", obj)
+--     elseif t == "table" then
+--         lua = lua .. "{"
+--         for k, v in pairs(obj) do
+--             lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","
+--         end
+--         local metatable = getmetatable(obj)
+--         if metatable ~= nil and type(metatable.__index) == "table" then
+--             for k, v in pairs(metatable.__index) do
+--                 lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","
+--             end
+--         end
+--         lua = lua .. "}"
+--     elseif t == "nil" then
+--         return nil
+--     else
+--         error("can not serialize a " .. t .. " type.")
+--     end
+--     return lua
 -- end
 
--- debug funcion 
+-- debug funcion
 -- local function table2string(tablevalue)
 --     local stringtable = serialize(tablevalue)
 --     print(stringtable)
@@ -173,25 +173,30 @@ local GO_CANDS = {
 -- end
 
 -- FIXME: refactor this to avoid the loop
-local function rel_position(file,view)
-
-	local data
-	if view == "current" then
-		data = Folder:by_kind(Folder.CURRENT).window
-	elseif view == "parent" then
-		if Folder:by_kind(Folder.PARENT) == nil then
-			return nil
-		end
-		data = Folder:by_kind(Folder.PARENT).window
-	elseif view == "preview" then
-		data = Folder:by_kind(Folder.PREVIEW).window
-	end
-
-	for i, f in ipairs(data) do
+local function rel_position(file, view)
+	for i, f in ipairs(Folder:by_kind(Folder.CURRENT).window) do
 		if f == file then
-			return i
+			return i, "current"
 		end
 	end
+
+	if view == "current" then
+		return nil, nil
+	end
+
+	for i, f in ipairs(Folder:by_kind(Folder.PARENT).window) do
+		if f == file then
+			return i, "parent"
+		end
+	end
+
+	for i, f in ipairs(Folder:by_kind(Folder.PREVIEW).window) do
+		if f == file then
+			return i, "preview"
+		end
+	end
+
+	return nil, nil
 end
 
 -- FIXME: find a better way to do this
@@ -243,31 +248,26 @@ local function toggle_ui(st)
 	st.icon, st.mode = Folder.icon, Status.mode
 	Folder.icon = function(self, file)
 		if st.type == "global" then
-			local pos = rel_position(file,"current")
-			if not pos then
-				local pos = rel_position(file,"parent")
-				if not pos then
-					local pos = rel_position(file,"preview")
-					if not pos then
-						return st.icon(self, file)
-					else
-						return ui.Span(PREVIEW_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
-					end
-				else
-					return ui.Span(PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
-				end
-			else
-				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")		
+			local pos, view = rel_position(file, "all")
+			if pos == nil then
+				return st.icon(self, file)
+			elseif view == "current" then
+				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+			elseif view == "parent" then
+				return ui.Span(PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+			elseif view == "preview" then
+				return ui.Span(PREVIEW_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			end
-		
 		else
-			local pos = rel_position(file,"current")
+			local pos = rel_position(file, "current")
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. CURRENT_DOUBLE_KEYS[pos] .. " ") or ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. CURRENT_DOUBLE_KEYS[pos] .. " ") or
+					ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			else
-				return st.type == nil and ui.Span( " " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ") or ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ") or
+					ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			end
 		end
 	end
@@ -287,12 +287,12 @@ local function split_yazi_cmd_arg(cmd)
 	local cmd_table = {}
 	local i = string.find(cmd, " ")
 	if i then
-	  local first = string.sub(cmd, 1, i - 1)
-	  local second = string.sub(cmd, i + 1)
-	  table.insert(cmd_table,first)
-	  table.insert(cmd_table,second)
-	  return cmd_table
-	end		
+		local first = string.sub(cmd, 1, i - 1)
+		local second = string.sub(cmd, i + 1)
+		table.insert(cmd_table, first)
+		table.insert(cmd_table, second)
+		return cmd_table
+	end
 	return nil
 end
 
@@ -307,12 +307,12 @@ local function count_preview_files(st)
 	end
 end
 
-local function again_global(st) 
+local function again_global(st)
 	if st.times == "once" then
 		return
 	end
 	next(true, { "global" })
-end 
+end
 
 return {
 	entry = function(_, args)
@@ -340,13 +340,13 @@ return {
 		if action == "global" then
 			-- "once" or nil,nil means to don't auto exit
 			state.times = args[2]
-			-- caculate file numbers of current window 
+			-- caculate file numbers of current window
 			state.current_num = #Folder:by_kind(Folder.CURRENT).window
 			if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
 				state.current_num = count_files(cx.active.current.cwd, Current.area.h)
 			end
 
-			-- caculate file numbers of parent window 
+			-- caculate file numbers of parent window
 			if Folder:by_kind(Folder.PARENT) ~= nil then
 				state.parent_num = #Folder:by_kind(Folder.PARENT).window
 				if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
@@ -356,7 +356,7 @@ return {
 				state.parent_num = 0
 			end
 
-			-- caculate file numbers of preview window 
+			-- caculate file numbers of preview window
 			if Folder:by_kind(Folder.PREVIEW) ~= nil then
 				state.preview_num = #Folder:by_kind(Folder.PREVIEW).window
 				if state.preview_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
@@ -368,7 +368,7 @@ return {
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num })			
+			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num })
 		end
 
 		-- Step 2: Waiting to read the candidate from the user
@@ -376,10 +376,10 @@ return {
 			local current_num = tonumber(args[2])
 			local parent_num = tonumber(args[3] ~= nil and args[3] or "0")
 			local preview_num = tonumber(args[4] ~= nil and args[4] or "0")
-			local current_cands,parent_cands,preview_cands,cands = {},{},{},{}
+			local current_cands, parent_cands, preview_cands, cands = {}, {}, {}, {}
 
 			-- generate cands of entry of current window
-			if current_num ==0 then
+			if current_num == 0 then
 				current_cands = {}
 			elseif parent_num ~= 0 or preview_num ~= 0 then -- global mode disable signal key
 				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
@@ -406,25 +406,25 @@ return {
 			end
 
 			--attach current cands to cands table
-			for i = 1, #current_cands do 
+			for i = 1, #current_cands do
 				table.insert(cands, current_cands[i])
 			end
 
 			--attach parent cands to cands table
-			for i = 1, #parent_cands do 
+			for i = 1, #parent_cands do
 				table.insert(cands, parent_cands[i])
 			end
 
 			--attach preview cands to cands table
-			for i = 1, #preview_cands do 
+			for i = 1, #preview_cands do
 				table.insert(cands, preview_cands[i])
 			end
 
 			--attach go cands to cands table
-			for i = 1, #GO_CANDS do 
+			for i = 1, #GO_CANDS do
 				table.insert(cands, GO_CANDS[i])
 			end
-		
+
 			--attach special cands to cands table
 			for i = 1, #SPECIAL_KEYS do --attach special key
 				table.insert(cands, SPECIAL_CANDS[i])
@@ -454,54 +454,54 @@ return {
 
 		-- hit specail key
 		if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
-			local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
+			local special_key_str = SPECIAL_KEYS
+				[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 			if special_key_str == "<Esc>" then
 				return
 			elseif special_key_str == "<Enter>" then
-				ya.manager_emit("open",{})
+				ya.manager_emit("open", {})
 			elseif special_key_str == "<Left>" then
-				ya.manager_emit("leave",{})
-				next(true,{state.type})
+				ya.manager_emit("leave", {})
+				next(true, { state.type })
 				return
 			elseif special_key_str == "<Right>" then
-				ya.manager_emit("enter",{})
-				next(true,{state.type})
+				ya.manager_emit("enter", {})
+				next(true, { state.type })
 				return
 			elseif special_key_str == "<Up>" then
-				ya.manager_emit("arrow",{"-1"})
+				ya.manager_emit("arrow", { "-1" })
 			elseif special_key_str == "<Down>" then
-				ya.manager_emit("arrow",{"1"})
+				ya.manager_emit("arrow", { "1" })
 			elseif special_key_str == "<Space>" then
 				local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 				local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 				ya.manager_emit("select", { state = toggle_state })
 				ya.manager_emit("arrow", { 1 })
 			elseif special_key_str == "h" and state.type == "global" then
-				ya.manager_emit("leave",{})
-				next(true,{state.type})
+				ya.manager_emit("leave", {})
+				next(true, { state.type })
 				return
 			elseif special_key_str == "j" and state.type == "global" then
-				ya.manager_emit("arrow",{"1"})
+				ya.manager_emit("arrow", { "1" })
 			elseif special_key_str == "k" and state.type == "global" then
-				ya.manager_emit("arrow",{"-1"})
+				ya.manager_emit("arrow", { "-1" })
 			elseif special_key_str == "l" and state.type == "global" then
-				ya.manager_emit("enter",{})
-				next(true,{state.type})
+				ya.manager_emit("enter", {})
+				next(true, { state.type })
 				return
 			elseif special_key_str == "J" then
-				ya.manager_emit("arrow",{"5"})
+				ya.manager_emit("arrow", { "5" })
 			elseif special_key_str == "K" then
-				ya.manager_emit("arrow",{"-5"})
+				ya.manager_emit("arrow", { "-5" })
 			elseif special_key_str == "<A-j>" then
-				ya.manager_emit("seek",{"5"})
+				ya.manager_emit("seek", { "5" })
 			elseif special_key_str == "<A-k>" then
-				ya.manager_emit("seek",{"-5"})
+				ya.manager_emit("seek", { "-5" })
 			end
 		end
 
 		-- apply global mode
 		if state.type == "global" then
-
 			-- hit current area
 			if cand <= current_entry_num then -- hit normal key
 				local current_folder = Folder:by_kind(Folder.CURRENT)
@@ -510,33 +510,34 @@ return {
 				again_global(state)
 				return
 			end
-			
+
 			-- hit parent area
 			if cand > current_entry_num and cand <= (current_entry_num + parent_entry_num) then
 				local parent_folder = Folder:by_kind(Folder.PARENT)
 				ya.manager_emit("leave", {})
 				ya.manager_emit("arrow", { cand - current_entry_num - 1 + parent_folder.offset - parent_folder.cursor })
 				again_global(state)
-				return		
+				return
 			end
 
 			-- hit preview area
 			if cand > (current_entry_num + parent_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num) then
 				local preview_folder = Folder:by_kind(Folder.PREVIEW)
 				ya.manager_emit("enter", {})
-				ya.manager_emit("arrow", { cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor })
+				ya.manager_emit("arrow",
+					{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor })
 				again_global(state)
-				return		
+				return
 			end
 
-			-- hit go 
+			-- hit go
 			if cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
- 				local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num 
-				
+				local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
+
 				local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
-				ya.manager_emit(cmd[1],{cmd[2]})  -- Bug: async action may let 303 unkonw under cursor file
+				ya.manager_emit(cmd[1], { cmd[2] }) -- Bug: async action may let 303 unkonw under cursor file
 				again_global(state)
-				return		
+				return
 			end
 
 			--never auto exit global mode
@@ -564,7 +565,7 @@ return {
 			if cand <= current_entry_num then -- don't hit special key cand
 				ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 			else
-				next(true, {state.type})
+				next(true, { state.type })
 				return
 			end
 		end
