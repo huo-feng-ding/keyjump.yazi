@@ -174,9 +174,14 @@ local GO_CANDS = {
 
 -- FIXME: refactor this to avoid the loop
 local function rel_position(file, view)
-	for i, f in ipairs(Folder:by_kind(Folder.CURRENT).window) do
-		if f.url == file.url then
-			return i, "current"
+	local folder
+
+	folder = Folder:by_kind(Folder.CURRENT)
+	if folder then
+		for i, f in ipairs(folder.window) do
+			if f.url == file.url then
+				return i, "current"
+			end
 		end
 	end
 
@@ -184,15 +189,21 @@ local function rel_position(file, view)
 		return nil, nil
 	end
 
-	for i, f in ipairs(Folder:by_kind(Folder.PARENT).window) do
-		if f.url == file.url then
-			return i, "parent"
+	folder = Folder:by_kind(Folder.PARENT)
+	if folder then
+		for i, f in ipairs(folder.window) do
+			if f.url == file.url then
+				return i, "parent"
+			end
 		end
 	end
 
-	for i, f in ipairs(Folder:by_kind(Folder.PREVIEW).window) do
-		if f.url == file.url then
-			return i, "preview"
+	folder = Folder:by_kind(Folder.PREVIEW)
+	if folder then
+		for i, f in ipairs(folder.window) do
+			if f.url == file.url then
+				return i, "preview"
+			end
 		end
 	end
 
