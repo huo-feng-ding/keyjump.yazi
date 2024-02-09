@@ -231,8 +231,8 @@ local function count_files(url, max)
 		end
 		handle:close()
 		return i
-	else
-		local f = io.popen(cmd)
+	else --TODO: find better way to do this
+		local f = io.popen(cmd) -- when the directory no permission, may be exception 
 		local num = tonumber(f:read("*all"))
 		f:close()
 
