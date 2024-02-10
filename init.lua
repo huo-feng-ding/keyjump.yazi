@@ -310,8 +310,9 @@ end
 
 local function count_preview_files(st)
 	local folder = Folder:by_kind(Folder.CURRENT)
-	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
-	if under_cursor_file.cha.is_dir then
+	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
+	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1] 
+	if under_cursor_file and under_cursor_file.cha.is_dir then
 		local split_char = ya.target_family() == "windows" and "\\" or "/"
 		st.preview_num = count_files(cx.active.current.cwd .. split_char .. under_cursor_file.name, Preview.area.h)
 	else
