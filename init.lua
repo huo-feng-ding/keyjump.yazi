@@ -4,13 +4,14 @@ local SPECIAL_KEYS = {
 	"<Left>", "<Right>", "<Up>", "<Down>",
 	"h", "j", "k", "l",
 	"J", "K",
-	"<A-j>", "<A-k>"
+	"<A-j>", "<A-k>",
+	"z"
 }
 
 -- stylua: ignore
 local SINGLE_KEYS = {
 	"p", "b", "e", "t", "a", "o", "i", "n", "s", "r", "h", "l", "d", "c",
-	"u", "m", "f", "g", "w", "v", "k", "j", "x", "z", "y", "q"
+	"u", "m", "f", "g", "w", "v", "k", "j", "x", "y", "q"
 }
 -- stylua: ignore
 local CURRENT_DOUBLE_KEYS = {
@@ -26,8 +27,8 @@ local PREVIEW_DOUBLE_KEYS = {
 	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
 	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
 	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
-	"xk", "xl", "xn", "zu", "zi", "zo", "zh", "zj", "zk", "zl", "zn", "bu",
-	"bi", "bo", "bh", "bj", "bk", "bl"
+	"xk", "xl", "xn", "bu", "bi", "bo", "bh", "bj", "bk", "bl", "qp", "qy", 
+	"qm"
 }
 
 -- stylua: ignore
@@ -36,7 +37,7 @@ local PARRENT_DOUBLE_KEYS = {
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
 	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
 	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
-	"zp", "zy", "zm", "qp", "qy", "qm"
+	
 }
 
 -- stylua: ignore
@@ -46,6 +47,7 @@ local SPECIAL_CANDS = {
 	{ on = "h" }, { on = "j" }, { on = "k" }, { on = "l" },
 	{ on = "J" }, { on = "K" },
 	{ on = "<A-j>" }, { on = "<A-k>" },
+	{ on = "z" }
 }
 
 -- stylua: ignore
@@ -54,8 +56,7 @@ local SIGNAL_CANDS = {
 	{ on = "o" }, { on = "i" }, { on = "n" }, { on = "s" }, { on = "r" },
 	{ on = "h" }, { on = "l" }, { on = "d" }, { on = "c" }, { on = "u" },
 	{ on = "m" }, { on = "f" }, { on = "g" }, { on = "w" }, { on = "v" },
-	{ on = "k" }, { on = "j" }, { on = "x" }, { on = "z" }, { on = "y" },
-	{ on = "q" },
+	{ on = "k" }, { on = "j" }, { on = "x" }, { on = "y" }, { on = "q" },
 }
 -- stylua: ignore
 local CURRENT_DOUBLE_CANDS = {
@@ -96,12 +97,10 @@ local PREVIEW_DOUBLE_CANDS = {
 	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
 	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
 	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
-	{ on = { "z", "u" } }, { on = { "z", "i" } }, { on = { "z", "o" } },
-	{ on = { "z", "h" } }, { on = { "z", "j" } }, { on = { "z", "k" } },
-	{ on = { "z", "l" } }, { on = { "z", "n" } }, { on = { "b", "u" } },
-	{ on = { "b", "i" } }, { on = { "b", "o" } }, { on = { "b", "h" } },
-	{ on = { "b", "j" } }, { on = { "b", "k" } }, { on = { "b", "l" } }
-
+	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } }, 
+	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } }, 
+	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } }, 
+	{ on = { "q", "m" } }
 }
 
 -- stylua: ignore
@@ -123,15 +122,21 @@ local PARENT_DOUBLE_CANDS = {
 	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
 	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
 	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
-	{ on = { "z", "p" } }, { on = { "z", "y" } }, { on = { "z", "m" } },
-	{ on = { "q", "p" } }, { on = { "q", "y" } }, { on = { "q", "m" } }
 
 }
 
--- TODO: the async jump is too fast, the current folder cannot be found
+-- TODO: the async jump is too fast, the current folder may cannot be found
+
+-- use g + <key> to exec yazi cmd
 local GO_CANDS = {
 	-- { on = { "g", "c" },       exec = "cd ~/.config",     desc = "Go to config" },
 	-- { on = { "g", "r" },       exec = "cd /",          desc = "Go to /" },
+	-- { on = { "g", "d" },       exec = "cd ~/down",          desc = "Go to down" },
+	-- { on = { "g", "i" },       exec = "cd ~/Images",          desc = "Go to Image" },
+	-- { on = { "g", "f" },       exec = "cd ~/file",          desc = "Go to file" },
+	-- { on = { "g", "u" },       exec = "cd /media/UUI",          desc = "Go to U" },
+	-- { on = { "g", "l" },       exec = "cd ~/_install",          desc = "Go to install" },
+	-- { on = { "g", "h" },       exec = "cd ~/",          		desc = "Go to  home" },
 }
 
 
@@ -470,6 +475,8 @@ return {
 			local special_key_str = SPECIAL_KEYS
 				[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 			if special_key_str == "<Esc>" then
+				return
+			elseif special_key_str == "z" then
 				return
 			elseif special_key_str == "<Enter>" then
 				ya.manager_emit("open", {})
