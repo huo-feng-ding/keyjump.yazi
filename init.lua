@@ -255,7 +255,6 @@ local function count_files(url, max)
 end
 
 local function toggle_ui(st)
-	ya.manager_emit("peek", { force = true })
 	ya.render()
 	if st.icon or st.mode then
 		Folder.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
@@ -355,6 +354,7 @@ return {
 
 		-- enter global mode
 		if action == "global" then
+			ya.manager_emit("peek", { force = true })
 			-- "once" or nil,nil means to don't auto exit
 			state.times = args[2]
 			-- caculate file numbers of current window
