@@ -13,8 +13,29 @@ local SINGLE_KEYS = {
 	"p", "b", "e", "t", "a", "o", "i", "n", "s", "r", "h", "l", "d", "c",
 	"u", "m", "f", "g", "w", "v", "k", "j", "x", "y", "q"
 }
+
+local NORMAL_DOUBLE_KEYS = {
+	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
+	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
+	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh",
+	"ej", "ek", "el", "en", "ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn",
+	"cu",
+
+	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
+	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
+	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
+	"xk", "xl", "xn", "bu", "bi", "bo", "bh", "bj", "bk", "bl", "qp", "qy",
+	"qm",
+
+	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
+	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
+	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
+	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
+
+}
+
 -- stylua: ignore
-local CURRENT_DOUBLE_KEYS = {
+local GLOBAL_CURRENT_DOUBLE_KEYS = {
 	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
 	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh",
@@ -46,7 +67,7 @@ local CURRENT_DOUBLE_KEYS = {
 }
 
 -- stylua: ignore
-local PREVIEW_DOUBLE_KEYS = {
+local GLOBAL_PREVIEW_DOUBLE_KEYS = {
 	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
 	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
 	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
@@ -78,7 +99,7 @@ local PREVIEW_DOUBLE_KEYS = {
 }
 
 -- stylua: ignore
-local PARRENT_DOUBLE_KEYS = {
+local GLOBAL_PARRENT_DOUBLE_KEYS = {
 	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
 	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
@@ -126,8 +147,67 @@ local SIGNAL_CANDS = {
 	{ on = "m" }, { on = "f" }, { on = "g" }, { on = "w" }, { on = "v" },
 	{ on = "k" }, { on = "j" }, { on = "x" }, { on = "y" }, { on = "q" },
 }
+
 -- stylua: ignore
-local CURRENT_DOUBLE_CANDS = {
+local NORMAL_DOUBLE_CANDS = {
+	{ on = { "a", "u" } }, { on = { "a", "i" } }, { on = { "a", "o" } },
+	{ on = { "a", "h" } }, { on = { "a", "j" } }, { on = { "a", "k" } },
+	{ on = { "a", "l" } }, { on = { "a", "n" } }, { on = { "s", "u" } },
+	{ on = { "s", "i" } }, { on = { "s", "o" } }, { on = { "s", "h" } },
+	{ on = { "s", "j" } }, { on = { "s", "k" } }, { on = { "s", "l" } },
+	{ on = { "s", "n" } }, { on = { "d", "u" } }, { on = { "d", "i" } },
+	{ on = { "d", "o" } }, { on = { "d", "h" } }, { on = { "d", "j" } },
+	{ on = { "d", "k" } }, { on = { "d", "l" } }, { on = { "d", "n" } },
+	{ on = { "f", "u" } }, { on = { "f", "i" } }, { on = { "f", "o" } },
+	{ on = { "f", "h" } }, { on = { "f", "j" } }, { on = { "f", "k" } },
+	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } },
+	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } },
+	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } },
+	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } },
+	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } },
+	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } },
+	{ on = { "c", "u" } },
+
+	{ on = { "c", "i" } }, { on = { "c", "o" } }, { on = { "c", "h" } },
+	{ on = { "c", "j" } }, { on = { "c", "k" } }, { on = { "c", "l" } },
+	{ on = { "c", "n" } }, { on = { "w", "u" } }, { on = { "w", "i" } },
+	{ on = { "w", "o" } }, { on = { "w", "h" } }, { on = { "w", "j" } },
+	{ on = { "w", "k" } }, { on = { "w", "l" } }, { on = { "w", "n" } },
+	{ on = { "t", "u" } }, { on = { "t", "i" } }, { on = { "t", "o" } },
+	{ on = { "t", "h" } }, { on = { "t", "j" } }, { on = { "t", "k" } },
+	{ on = { "t", "l" } }, { on = { "t", "n" } }, { on = { "v", "u" } },
+	{ on = { "v", "i" } }, { on = { "v", "o" } }, { on = { "v", "h" } },
+	{ on = { "v", "j" } }, { on = { "v", "k" } }, { on = { "v", "l" } },
+	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
+	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
+	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
+	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } },
+	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } },
+	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } },
+	{ on = { "q", "m" } },
+
+	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
+	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
+	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
+	{ on = { "a", "p" } }, { on = { "a", "y" } }, { on = { "a", "m" } },
+	{ on = { "f", "p" } }, { on = { "f", "y" } }, { on = { "f", "m" } },
+	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
+	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
+	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
+	{ on = { "g", "p" } }, { on = { "g", "y" } }, { on = { "g", "m" } },
+	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
+	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
+	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
+	{ on = { "x", "p" } }, { on = { "x", "y" } }, { on = { "x", "m" } },
+	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
+	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
+	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
+
+
+}
+
+-- stylua: ignore
+local GLOBAL_CURRENT_DOUBLE_CANDS = {
 	{ on = { "a", "u" } }, { on = { "a", "i" } }, { on = { "a", "o" } },
 	{ on = { "a", "h" } }, { on = { "a", "j" } }, { on = { "a", "k" } },
 	{ on = { "a", "l" } }, { on = { "a", "n" } }, { on = { "s", "u" } },
@@ -172,7 +252,7 @@ local CURRENT_DOUBLE_CANDS = {
 
 
 -- stylua: ignore
-local PREVIEW_DOUBLE_CANDS = {
+local GLOBAL_PREVIEW_DOUBLE_CANDS = {
 
 	{ on = { "c", "i" } }, { on = { "c", "o" } }, { on = { "c", "h" } },
 	{ on = { "c", "j" } }, { on = { "c", "k" } }, { on = { "c", "l" } },
@@ -216,7 +296,7 @@ local PREVIEW_DOUBLE_CANDS = {
 }
 
 -- stylua: ignore
-local PARENT_DOUBLE_CANDS = {
+local GLOBAL_PARENT_DOUBLE_CANDS = {
 
 	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
 	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
@@ -403,19 +483,19 @@ local function toggle_ui(st)
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			elseif view == "parent" then
-				return ui.Span(PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			elseif view == "preview" then
-				return ui.Span(PREVIEW_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			end
 		else
 			local pos = rel_position(file, "current")
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. CURRENT_DOUBLE_KEYS[pos] .. " ") or
-					ui.Span(CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. NORMAL_DOUBLE_KEYS[pos] .. " ") or
+					ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			else
 				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ") or
 					ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
@@ -539,16 +619,16 @@ return {
 			if current_num == 0 then
 				current_cands = {}
 			elseif type == "global" then -- global mode disable signal key
-				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
+				current_cands = { table.unpack(GLOBAL_CURRENT_DOUBLE_CANDS, 1, current_num) }
 			elseif current_num > #SINGLE_KEYS then
-				current_cands = { table.unpack(CURRENT_DOUBLE_CANDS, 1, current_num) }
+				current_cands = { table.unpack(NORMAL_DOUBLE_CANDS, 1, current_num) }
 			else
 				current_cands = { table.unpack(SIGNAL_CANDS, 1, current_num) }
 			end
 
 			-- generate cands of entry of parent window
 			if parent_num ~= nil and parent_num ~= 0 then
-				parent_cands = { table.unpack(PARENT_DOUBLE_CANDS, 1, parent_num) }
+				parent_cands = { table.unpack(GLOBAL_PARENT_DOUBLE_CANDS, 1, parent_num) }
 			else
 				parent_cands = {}
 				parent_num = 0
@@ -556,7 +636,7 @@ return {
 
 			-- generate cands of entry of preview window
 			if preview_num ~= nil and preview_num ~= 0 then
-				preview_cands = { table.unpack(PREVIEW_DOUBLE_CANDS, 1, preview_num) }
+				preview_cands = { table.unpack(GLOBAL_PREVIEW_DOUBLE_CANDS, 1, preview_num) }
 			else
 				preview_cands = {}
 				preview_num = 0
