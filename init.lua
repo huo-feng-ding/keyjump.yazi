@@ -354,8 +354,7 @@ return {
 
 		-- enter global mode
 		if action == "global" then
-			-- clear preview cache
-			ya.manager_emit("peek", { force = true })
+
 			-- "once" or nil,nil means to don't auto exit
 			state.times = args[2]
 			-- caculate file numbers of current window
@@ -382,6 +381,11 @@ return {
 				end
 			else
 				count_preview_files(state)
+			end
+
+			-- if preview folder not empty, clear preview folder render cache to show jump key
+			if state.preview_num and state.preview_num ~= 0 then
+				ya.manager_emit("peek", { force = true })				
 			end
 
 			state.type = action
