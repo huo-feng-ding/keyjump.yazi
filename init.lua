@@ -476,8 +476,14 @@ return {
 			local special_key_str = SPECIAL_KEYS
 				[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 			if special_key_str == "<Esc>" then
+				if state.type == "global" then
+					ya.manager_emit("peek", { force = true })
+				end
 				return
 			elseif special_key_str == "z" then
+				if state.type == "global" then
+					ya.manager_emit("peek", { force = true })
+				end
 				return
 			elseif special_key_str == "<Enter>" then
 				ya.manager_emit("open", {})
