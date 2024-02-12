@@ -354,6 +354,7 @@ return {
 
 		-- enter global mode
 		if action == "global" then
+			-- clear preview cache
 			ya.manager_emit("peek", { force = true })
 			-- "once" or nil,nil means to don't auto exit
 			state.times = args[2]
