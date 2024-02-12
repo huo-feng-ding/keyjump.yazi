@@ -19,7 +19,30 @@ local CURRENT_DOUBLE_KEYS = {
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
 	"fu", "fi", "fo", "fh", "fj", "fk", "fl", "fn", "eu", "ei", "eo", "eh",
 	"ej", "ek", "el", "en", "ru", "ri", "ro", "rh", "rj", "rk", "rl", "rn",
-	"cu"
+	"cu",
+
+	-- left hand double key
+	"aq", "aw", "ae", 
+	"qw", "qe", "qr", 
+	"we", "wr", "wt", 
+	"er", "et", "es", 
+	"rt", "rs", "rd", 
+	"ts", "td", "tf", 
+	"sd", "sf", "sz", 
+	"ar", "at", "as",
+	"qt", "qs", "qd",
+	"ws", "wd", "wf",
+	"ed", "ef", "ez",
+	"rf", "rz", "rx",
+	"tz", "tx", "tc",
+	"sx", "sc", "sv",
+	"ad", "af", "az",
+	"qf", "qz", "qx",
+	"wz", "wx", "wc",
+	"ex", "ec", "ev",
+	"rc", "rv", "rb",
+	"tv", "tb", "fz",
+	
 }
 
 -- stylua: ignore
@@ -27,8 +50,31 @@ local PREVIEW_DOUBLE_KEYS = {
 	"ci", "co", "ch", "cj", "ck", "cl", "cn", "wu", "wi", "wo", "wh", "wj",
 	"wk", "wl", "wn", "tu", "ti", "to", "th", "tj", "tk", "tl", "tn", "vu",
 	"vi", "vo", "vh", "vj", "vk", "vl", "vn", "xu", "xi", "xo", "xh", "xj",
-	"xk", "xl", "xn", "bu", "bi", "bo", "bh", "bj", "bk", "bl", "qp", "qy", 
-	"qm"
+	"xk", "xl", "xn", "bu", "bi", "bo", "bh", "bj", "bk", "bl", "qp", "qy",
+	"qm",
+
+	-- left hand double key
+	"sb", "df", "dz",
+	"ax", "ac", "av",
+	"qc", "qv", "qb",
+	"wv", "wb", "cv",
+	"eb", "xc", "xv",
+	"zx", "zc", "zv",
+	"fx", "fc", "fv",
+	"dx", "dc", "dv",
+	"ab", "ba", "cb",
+	"xb", "zb", "fb",
+	"db", "vb", "qa",
+	"wq", "ew", "re",
+	"tr", "fd", "cx",
+	"st", "zf", "vc",
+	"ds", "xz", "bv",
+	"wa", "vx", "cf",
+	"eq", "bc", "vz",
+	"rw", "ea", "bx",
+	"te", "rq", "ra",
+	"sr", "tw", "tq",
+	
 }
 
 -- stylua: ignore
@@ -37,7 +83,29 @@ local PARRENT_DOUBLE_KEYS = {
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
 	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
 	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
-	
+
+	-- left hand double key
+	"dt","se","sw",
+	"fs","dr","de",
+	"zd","ft","fr",
+	"xf","zs","zt",
+	"cz","xd","xs",
+	"cd","cd","da",
+	"vf","vf","fq",
+	"bz","bz","zw",
+	"ta","ta","xe",
+	"sq","sq","cr",
+	"dw","dw","vt",
+	"fe","fe","bs",
+	"zr","zr","fa",
+	"xt","xt","zq",
+	"cs","cs","xw",
+	"ce","cw","vw",
+	"vr","ve","be",
+	"bt","br","ca",
+	"za","xa","vq",
+	"xq","cq","bw",
+
 }
 
 -- stylua: ignore
@@ -76,7 +144,29 @@ local CURRENT_DOUBLE_CANDS = {
 	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } },
 	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } },
 	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } },
-	{ on = { "c", "u" } }
+	{ on = { "c", "u" } },
+
+	-- left hand double key
+	{ on = { "a", "q" } }, { on = { "a", "w" } }, { on = { "a", "e" } },
+	{ on = { "q", "w" } }, { on = { "q", "e" } }, { on = { "q", "r" } },
+	{ on = { "w", "e" } }, { on = { "w", "r" } }, { on = { "w", "t" } },
+	{ on = { "e", "r" } }, { on = { "e", "t" } }, { on = { "e", "s" } },
+	{ on = { "r", "t" } }, { on = { "r", "s" } }, { on = { "r", "d" } },
+	{ on = { "t", "s" } }, { on = { "t", "d" } }, { on = { "t", "f" } },
+	{ on = { "s", "d" } }, { on = { "s", "f" } }, { on = { "s", "z" } },
+	{ on = { "a", "r" } }, { on = { "a", "t" } }, { on = { "a", "s" } },
+	{ on = { "q", "t" } }, { on = { "q", "s" } }, { on = { "q", "d" } },
+	{ on = { "w", "s" } }, { on = { "w", "d" } }, { on = { "w", "f" } },
+	{ on = { "e", "d" } }, { on = { "e", "f" } }, { on = { "e", "z" } },
+	{ on = { "r", "f" } }, { on = { "r", "z" } }, { on = { "r", "x" } },
+	{ on = { "t", "z" } }, { on = { "t", "x" } }, { on = { "t", "c" } },
+	{ on = { "s", "x" } }, { on = { "s", "c" } }, { on = { "s", "v" } },
+	{ on = { "a", "d" } }, { on = { "a", "f" } }, { on = { "a", "z" } },
+	{ on = { "q", "f" } }, { on = { "q", "z" } }, { on = { "q", "x" } },
+	{ on = { "w", "z" } }, { on = { "w", "x" } }, { on = { "w", "c" } },
+	{ on = { "e", "x" } }, { on = { "e", "c" } }, { on = { "e", "v" } },
+	{ on = { "r", "c" } }, { on = { "r", "v" } }, { on = { "r", "b" } },
+	{ on = { "t", "v" } }, { on = { "t", "b" } }, { on = { "f", "z" } },
 
 }
 
@@ -97,10 +187,32 @@ local PREVIEW_DOUBLE_CANDS = {
 	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
 	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
 	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
-	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } }, 
-	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } }, 
-	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } }, 
-	{ on = { "q", "m" } }
+	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } },
+	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } },
+	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } },
+	{ on = { "q", "m" } },
+
+	-- left hand double key
+	{ on = { "s", "b" } }, { on = { "d", "f" } }, { on = { "d", "z" } },
+	{ on = { "a", "x" } }, { on = { "a", "c" } }, { on = { "a", "v" } },
+	{ on = { "q", "c" } }, { on = { "q", "v" } }, { on = { "q", "b" } },
+	{ on = { "w", "v" } }, { on = { "w", "b" } }, { on = { "c", "v" } },
+	{ on = { "e", "b" } }, { on = { "x", "c" } }, { on = { "x", "v" } },
+	{ on = { "z", "x" } }, { on = { "z", "c" } }, { on = { "z", "v" } },
+	{ on = { "f", "x" } }, { on = { "f", "c" } }, { on = { "f", "v" } },
+	{ on = { "d", "x" } }, { on = { "d", "c" } }, { on = { "d", "v" } },
+	{ on = { "a", "b" } }, { on = { "b", "a" } }, { on = { "c", "b" } },
+	{ on = { "x", "b" } }, { on = { "z", "b" } }, { on = { "f", "b" } },
+	{ on = { "d", "b" } }, { on = { "v", "b" } }, { on = { "q", "a" } },
+	{ on = { "w", "q" } }, { on = { "e", "w" } }, { on = { "r", "e" } },
+	{ on = { "t", "r" } }, { on = { "f", "d" } }, { on = { "c", "x" } },
+	{ on = { "s", "t" } }, { on = { "z", "f" } }, { on = { "v", "c" } },
+	{ on = { "d", "s" } }, { on = { "x", "z" } }, { on = { "b", "v" } },
+	{ on = { "w", "a" } }, { on = { "v", "x" } }, { on = { "c", "f" } },
+	{ on = { "e", "q" } }, { on = { "b", "c" } }, { on = { "v", "z" } },
+	{ on = { "r", "w" } }, { on = { "e", "a" } }, { on = { "b", "x" } },
+	{ on = { "t", "e" } }, { on = { "r", "q" } }, { on = { "r", "a" } },
+	{ on = { "s", "r" } }, { on = { "t", "w" } }, { on = { "t", "q" } },
 }
 
 -- stylua: ignore
@@ -122,6 +234,29 @@ local PARENT_DOUBLE_CANDS = {
 	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
 	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
 	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
+
+	-- left hand double key
+	{ on = { "d", "t" } }, { on = { "s", "e" } }, { on = { "s", "w" } },
+	{ on = { "f", "s" } }, { on = { "d", "r" } }, { on = { "d", "e" } },
+	{ on = { "z", "d" } }, { on = { "f", "t" } }, { on = { "f", "r" } },
+	{ on = { "x", "f" } }, { on = { "z", "s" } }, { on = { "z", "t" } },
+	{ on = { "c", "z" } }, { on = { "x", "d" } }, { on = { "x", "s" } },
+	{ on = { "c", "d" } }, { on = { "c", "d" } }, { on = { "d", "a" } },
+	{ on = { "v", "f" } }, { on = { "v", "f" } }, { on = { "f", "q" } },
+	{ on = { "b", "z" } }, { on = { "b", "z" } }, { on = { "z", "w" } },
+	{ on = { "t", "a" } }, { on = { "t", "a" } }, { on = { "x", "e" } },
+	{ on = { "s", "q" } }, { on = { "s", "q" } }, { on = { "c", "r" } },
+	{ on = { "d", "w" } }, { on = { "d", "w" } }, { on = { "v", "t" } },
+	{ on = { "f", "e" } }, { on = { "f", "e" } }, { on = { "b", "s" } },
+	{ on = { "z", "r" } }, { on = { "z", "r" } }, { on = { "f", "a" } },
+	{ on = { "x", "t" } }, { on = { "x", "t" } }, { on = { "z", "q" } },
+	{ on = { "c", "s" } }, { on = { "c", "s" } }, { on = { "x", "w" } },
+	{ on = { "c", "e" } }, { on = { "c", "w" } }, { on = { "v", "w" } },
+	{ on = { "v", "r" } }, { on = { "v", "e" } }, { on = { "b", "e" } },
+	{ on = { "b", "t" } }, { on = { "b", "r" } }, { on = { "c", "a" } },
+	{ on = { "z", "a" } }, { on = { "x", "a" } }, { on = { "v", "q" } },
+	{ on = { "x", "q" } }, { on = { "c", "q" } }, { on = { "b", "w" } },
+
 
 }
 
@@ -223,7 +358,7 @@ local function count_files(url, max)
 		cmd = cmd .. ya.quote(tostring(url))
 	else
 		cmd = cx.active.conf.show_hidden and "ls -A  " or "ls "
-		cmd = "test -r " .. ya.quote(tostring(url)) .."&&".. cmd .. ya.quote(tostring(url)) .. " | wc -l"
+		cmd = "test -r " .. ya.quote(tostring(url)) .. "&&" .. cmd .. ya.quote(tostring(url)) .. " | wc -l"
 	end
 
 	if ya.target_family() == "windows" then
@@ -315,7 +450,7 @@ end
 local function count_preview_files(st)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
-	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1] 
+	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	if under_cursor_file and under_cursor_file.cha.is_dir then
 		st.preview_num = count_files(tostring(under_cursor_file.url), Preview.area.h)
 	else
@@ -349,12 +484,11 @@ return {
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, "0", "0" ,state.type})
+			return next(false, { "_read", state.current_num, "0", "0", state.type })
 		end
 
 		-- enter global mode
 		if action == "global" then
-
 			-- "once" or nil,nil means to don't auto exit
 			state.times = args[2]
 			-- caculate file numbers of current window
@@ -385,12 +519,12 @@ return {
 
 			-- if preview folder not empty, clear preview folder render cache to show jump key
 			if state.preview_num and state.preview_num ~= 0 then
-				ya.manager_emit("peek", { force = true })				
+				ya.manager_emit("peek", { force = true })
 			end
 
 			state.type = action
 			toggle_ui(state())
-			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num,state.type })
+			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num, state.type })
 		end
 
 		-- Step 2: Waiting to read the candidate from the user
@@ -456,9 +590,9 @@ return {
 			local cand = ya.which { cands = cands, silent = true }
 
 			if cand == nil then --never auto exit when pressing a nonexistent prompt key
-				return next(false, { "_read", current_num, parent_num, preview_num,type })
+				return next(false, { "_read", current_num, parent_num, preview_num, type })
 			else
-				return next(true, { "_apply", cand, current_num, parent_num, preview_num,type })
+				return next(true, { "_apply", cand, current_num, parent_num, preview_num, type })
 			end
 		end
 
