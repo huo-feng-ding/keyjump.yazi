@@ -44,6 +44,8 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 "Down" : arrow down 1 entry (global,select,keep,normal)
 "alt+k" : seek up 5 entry (global,select,keep,normal)
 "alt+j" : seek down 5 entry (global,select,keep,normal)
+"ctrl+k" : prev page (global,select,keep,normal)
+"ctrl+j" : next page entry (global,select,keep,normal)
 "K" : arrow up 5 entry (global,select,keep,normal)
 "J" : arrow down 5 entry (global,select,keep,normal)
 

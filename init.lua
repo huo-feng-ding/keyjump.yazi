@@ -5,7 +5,8 @@ local SPECIAL_KEYS = {
 	"h", "j", "k", "l",
 	"J", "K",
 	"<A-j>", "<A-k>",
-	"z"
+	"z",
+	"<C-j>", "<C-k>",
 }
 
 -- stylua: ignore
@@ -136,7 +137,8 @@ local SPECIAL_CANDS = {
 	{ on = "h" }, { on = "j" }, { on = "k" }, { on = "l" },
 	{ on = "J" }, { on = "K" },
 	{ on = "<A-j>" }, { on = "<A-k>" },
-	{ on = "z" }
+	{ on = "z" },
+	{ on = "<C-j>" }, { on = "<C-k>" },
 }
 
 -- stylua: ignore
@@ -758,6 +760,14 @@ return {
 				return
 			elseif special_key_str == "<A-k>" then
 				ya.manager_emit("seek", { "-5" })
+				next(true, { state.type })
+				return
+			elseif special_key_str == "<C-j>" then
+				ya.manager_emit("arrow", { "100%" })
+				next(true, { state.type })
+				return
+			elseif special_key_str == "<C-k>" then
+				ya.manager_emit("arrow", { "-100%" })
 				next(true, { state.type })
 				return
 			end
