@@ -1,6 +1,6 @@
 # keyjump.yazi
 
-A Yazi plugin which like flash.nvim in Neovim, allow use key char to precise selection.
+A Yazi plugin like flash.nvim in Neovim, allows precise navigation using single (or double) characters.
 
 > [!NOTE]
 > The latest main branch of Yazi is required at the moment.
