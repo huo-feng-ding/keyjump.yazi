@@ -15,6 +15,7 @@ local SINGLE_KEYS = {
 	"u", "m", "f", "g", "w", "v", "k", "j", "x", "y", "q"
 }
 
+-- stylua: ignore
 local NORMAL_DOUBLE_KEYS = {
 	"au", "ai", "ao", "ah", "aj", "ak", "al", "an", "su", "si", "so", "sh",
 	"sj", "sk", "sl", "sn", "du", "di", "do", "dh", "dj", "dk", "dl", "dn",
@@ -44,13 +45,13 @@ local GLOBAL_CURRENT_DOUBLE_KEYS = {
 	"cu",
 
 	-- left hand double key
-	"aq", "aw", "ae", 
-	"qw", "qe", "qr", 
-	"we", "wr", "wt", 
-	"er", "et", "es", 
-	"rt", "rs", "rd", 
-	"ts", "td", "tf", 
-	"sd", "sf", "sz", 
+	"aq", "aw", "ae",
+	"qw", "qe", "qr",
+	"we", "wr", "wt",
+	"er", "et", "es",
+	"rt", "rs", "rd",
+	"ts", "td", "tf",
+	"sd", "sf", "sz",
 	"ar", "at", "as",
 	"qt", "qs", "qd",
 	"ws", "wd", "wf",
@@ -64,7 +65,7 @@ local GLOBAL_CURRENT_DOUBLE_KEYS = {
 	"ex", "ec", "ev",
 	"rc", "rv", "rb",
 	"tv", "tb", "fz",
-	
+
 }
 
 -- stylua: ignore
@@ -96,7 +97,6 @@ local GLOBAL_PREVIEW_DOUBLE_KEYS = {
 	"rw", "ea", "bx",
 	"te", "rq", "ra",
 	"sr", "tw", "tq",
-	
 }
 
 -- stylua: ignore
@@ -299,7 +299,6 @@ local GLOBAL_PREVIEW_DOUBLE_CANDS = {
 
 -- stylua: ignore
 local GLOBAL_PARENT_DOUBLE_CANDS = {
-
 	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
 	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
 	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
@@ -338,8 +337,6 @@ local GLOBAL_PARENT_DOUBLE_CANDS = {
 	{ on = { "b", "t" } }, { on = { "b", "r" } }, { on = { "c", "a" } },
 	{ on = { "z", "a" } }, { on = { "x", "a" } }, { on = { "v", "q" } },
 	{ on = { "x", "q" } }, { on = { "c", "q" } }, { on = { "b", "w" } },
-
-
 }
 
 -- TODO: the async jump is too fast, the current folder may cannot be found
@@ -355,7 +352,6 @@ local GO_CANDS = {
 	-- { on = { "g", "l" },       exec = "cd ~/_install",          desc = "Go to install" },
 	-- { on = { "g", "h" },       exec = "cd ~/",          		desc = "Go to  home" },
 }
-
 
 -- debug function
 -- local function serialize(obj)
@@ -496,11 +492,11 @@ local function toggle_ui(st)
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. NORMAL_DOUBLE_KEYS[pos] .. " ") or
-					ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. NORMAL_DOUBLE_KEYS[pos] .. " ")
+					or ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			else
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ") or
-					ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ")
+					or ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
 			end
 		end
 	end
@@ -548,7 +544,7 @@ local function again_global(st)
 end
 
 return {
-	entry = function(_, args)
+	entry = function(state, args)
 		local action = args[1]
 
 		-- Step 1: Patch the UI with our candidates
@@ -565,7 +561,7 @@ return {
 			end
 
 			state.type = action
-			toggle_ui(state())
+			toggle_ui(state)
 			return next(false, { "_read", state.current_num, "0", "0", state.type })
 		end
 
@@ -605,7 +601,7 @@ return {
 			end
 
 			state.type = action
-			toggle_ui(state())
+			toggle_ui(state)
 			return next(false, { "_read", state.current_num, state.parent_num, state.preview_num, state.type })
 		end
 
@@ -679,7 +675,7 @@ return {
 		end
 
 		-- Step 3: Restore the UI we patched in step 1, once we read the candidate
-		toggle_ui(state())
+		toggle_ui(state)
 		if action ~= "_apply" then
 			return
 		end
@@ -693,8 +689,7 @@ return {
 
 		-- hit specail key
 		if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
-			local special_key_str = SPECIAL_KEYS
-				[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
+			local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 			if special_key_str == "<Esc>" then
 				if state.type == "global" then
 					ya.manager_emit("peek", { force = true })
@@ -793,17 +788,25 @@ return {
 			end
 
 			-- hit preview area
-			if cand > (current_entry_num + parent_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num) then
+			if
+				cand > (current_entry_num + parent_entry_num)
+				and cand <= (current_entry_num + parent_entry_num + preview_entry_num)
+			then
 				local preview_folder = Folder:by_kind(Folder.PREVIEW)
 				ya.manager_emit("enter", {})
-				ya.manager_emit("arrow",
-					{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor })
+				ya.manager_emit(
+					"arrow",
+					{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor }
+				)
 				again_global(state)
 				return
 			end
 
 			-- hit go
-			if cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
+			if
+				cand > (current_entry_num + parent_entry_num + preview_entry_num)
+				and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num)
+			then
 				local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
 
 				local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
