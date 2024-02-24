@@ -468,9 +468,9 @@ local function count_files(url, max)
 end
 
 local toggle_ui = ya.sync(function(st)
-	ya.render()
 	if st.icon or st.mode then
 		Folder.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
+		ya.render()
 		return
 	end
 
@@ -508,7 +508,7 @@ local toggle_ui = ya.sync(function(st)
 			ui.Span(" KJ-" .. tostring(cx.active.mode):upper() .. " "):style(style),
 		}
 	end
-
+	ya.render()
 end)
 
 
@@ -536,56 +536,6 @@ local function count_preview_files(st)
 	end
 end
 
-
-local init_normal_action = ya.sync(function(state)
-
-	ya.err("#11")
-	if #SINGLE_KEYS >= Current.area.h then
-		state.current_num = Current.area.h -- Fast path
-	else
-		state.current_num = #Folder:by_kind(Folder.CURRENT).window
-		if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-			state.current_num = count_files(cx.active.current.cwd, Current.area.h)
-		end
-	end
-end)
-
-local init_global_action = ya.sync(function(state,arg_times)
-
-	-- "once" or nil,nil means to don't auto exit
-	state.times = arg_times
-	-- caculate file numbers of current window
-	state.current_num = #Folder:by_kind(Folder.CURRENT).window
-	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
-	end
-
-	-- caculate file numbers of parent window
-	if Folder:by_kind(Folder.PARENT) ~= nil then
-		state.parent_num = #Folder:by_kind(Folder.PARENT).window
-		if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
-			state.parent_num = count_files(cx.active.parent.cwd, Parent.area.h)
-		end
-	else
-		state.parent_num = 0
-	end
-
-	-- caculate file numbers of preview window
-	if Folder:by_kind(Folder.PREVIEW) ~= nil then
-		state.preview_num = #Folder:by_kind(Folder.PREVIEW).window
-		if state.preview_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
-			count_preview_files(state)
-		end
-	else
-		count_preview_files(state)
-	end
-
-	-- if preview folder not empty, clear preview folder render cache to show jump key
-	if state.preview_num and state.preview_num ~= 0 then
-		ya.manager_emit("peek", { force = true })
-	end
-end)
-
 local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num, arg_preview_num)
 
 	local cand = tonumber(arg_cand)
@@ -602,62 +552,62 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			if state.type == "global" then
 				ya.manager_emit("peek", { force = true })
 			end
-			return
+			return true
 		elseif special_key_str == "z" then
 			if state.type == "global" then
 				ya.manager_emit("peek", { force = true })
 			end
-			return
+			return true
 		elseif special_key_str == "<Enter>" then
 			ya.manager_emit("open", {})
 		elseif special_key_str == "<Left>" then
 			ya.manager_emit("leave", {})
-			return
+			return false
 		elseif special_key_str == "<Right>" then
 			ya.manager_emit("enter", {})
-			return
+			return false
 		elseif special_key_str == "<Up>" then
 			ya.manager_emit("arrow", { "-1" })
-			return
+			return false
 		elseif special_key_str == "<Down>" then
 			ya.manager_emit("arrow", { "1" })
-			return
+			return false
 		elseif special_key_str == "<Space>" then
 			local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
 			local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 			ya.manager_emit("select", { state = toggle_state })
 			ya.manager_emit("arrow", { 1 })
-			return
+			return false
 		elseif special_key_str == "h" and state.type == "global" then
 			ya.manager_emit("leave", {})
-			return
+			return false
 		elseif special_key_str == "j" and state.type == "global" then
 			ya.manager_emit("arrow", { "1" })
-			return
+			return false
 		elseif special_key_str == "k" and state.type == "global" then
 			ya.manager_emit("arrow", { "-1" })
-			return
+			return false
 		elseif special_key_str == "l" and state.type == "global" then
 			ya.manager_emit("enter", {})
-			return
+			return false
 		elseif special_key_str == "J" then
 			ya.manager_emit("arrow", { "5" })
-			return
+			return false
 		elseif special_key_str == "K" then
 			ya.manager_emit("arrow", { "-5" })
-			return
+			return false
 		elseif special_key_str == "<A-j>" then
 			ya.manager_emit("seek", { "5" })
-			return
+			return false
 		elseif special_key_str == "<A-k>" then
 			ya.manager_emit("seek", { "-5" })
-			return
+			return false
 		elseif special_key_str == "<C-j>" then
 			ya.manager_emit("arrow", { "100%" })
-			return
+			return false
 		elseif special_key_str == "<C-k>" then
 			ya.manager_emit("arrow", { "-100%" })
-			return
+			return false
 		end
 	end
 
@@ -667,50 +617,34 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		if cand <= current_entry_num then -- hit normal key
 			local current_folder = Folder:by_kind(Folder.CURRENT)
 			ya.manager_emit("arrow", { cand - 1 + current_folder.offset - current_folder.cursor })
-			again_global(state)
-			return
-		end
-
 		-- hit parent area
-		if cand > current_entry_num and cand <= (current_entry_num + parent_entry_num) then
+		elseif cand > current_entry_num and cand <= (current_entry_num + parent_entry_num) then
 			local parent_folder = Folder:by_kind(Folder.PARENT)
 			ya.manager_emit("leave", {})
 			ya.manager_emit("arrow", { cand - current_entry_num - 1 + parent_folder.offset - parent_folder.cursor })
-			again_global(state)
-			return
-		end
-
 		-- hit preview area
-		if
-			cand > (current_entry_num + parent_entry_num)
-			and cand <= (current_entry_num + parent_entry_num + preview_entry_num)
-		then
+		elseif
+			cand > (current_entry_num + parent_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num) then
 			local preview_folder = Folder:by_kind(Folder.PREVIEW)
 			ya.manager_emit("enter", {})
 			ya.manager_emit(
 				"arrow",
 				{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor }
 			)
-			again_global(state)
-			return
-		end
 
 		-- hit go
-		if
-			cand > (current_entry_num + parent_entry_num + preview_entry_num)
-			and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num)
-		then
+		elseif cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 			local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
-
 			local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
 			ya.manager_emit(cmd[1], { cmd[2] }) -- Bug: async action may let 303 unkonw under cursor file
-			again_global(state)
-			return
 		end
 
-		--never auto exit global mode
-		again_global(state)
-		return
+		-- whether continue global
+		if state.times == "once" then
+			return true
+		else
+			return false
+		end
 	end
 
 	-- apply select mode
@@ -720,7 +654,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 		end
 
-		return
+		return false
 	end
 
 	-- apply keep mode and normal mode
@@ -732,15 +666,15 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	if state.type == "keep" and folder.window[cand].cha.is_dir then
 		local folder = Folder:by_kind(Folder.CURRENT)
 		ya.manager_emit("enter", {})
-		return
+		return false
 	else
-		state.exit = true
+		return true
 	end
 
 end)
 
 
-local function read_input_todo (state, arg_current_num,arg_parent_num,arg_preview_num,arg_type)
+local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 
 	local current_num = tonumber(arg_current_num)
 	local parent_num = tonumber(arg_parent_num~= nil and arg_parent_num or "0")
@@ -800,55 +734,105 @@ local function read_input_todo (state, arg_current_num,arg_parent_num,arg_previe
 		table.insert(cands, SPECIAL_CANDS[i])
 	end
 
-	local cand = ya.which { cands = cands, silent = false }
+	local cand = ya.which { cands = cands, silent = true }
 
 	if cand == nil then --never auto exit when pressing a nonexistent prompt key
-		read_input_todo(state, arg_current_num,arg_parent_num,arg_preview_num,arg_type)
+		read_input_todo(arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 	else
-		apply(state, cand, current_num, parent_num, preview_num)
+		return apply(cand, current_num, parent_num, preview_num)
 	end
 
 end
 
+
+local init_global_action = ya.sync(function(state,arg_times)
+
+	-- "once" or nil,nil means to don't auto exit
+	state.times = arg_times
+	-- caculate file numbers of current window
+	state.current_num = #Folder:by_kind(Folder.CURRENT).window
+	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
+	end
+
+	-- caculate file numbers of parent window
+	if Folder:by_kind(Folder.PARENT) ~= nil then
+		state.parent_num = #Folder:by_kind(Folder.PARENT).window
+		if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
+			state.parent_num = count_files(cx.active.parent.cwd, Parent.area.h)
+		end
+	else
+		state.parent_num = 0
+	end
+
+	-- caculate file numbers of preview window
+	if Folder:by_kind(Folder.PREVIEW) ~= nil then
+		state.preview_num = #Folder:by_kind(Folder.PREVIEW).window
+		if state.preview_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
+			count_preview_files(state)
+		end
+	else
+		count_preview_files(state)
+	end
+
+	-- if preview folder not empty, clear preview folder render cache to show jump key
+	if state.preview_num and state.preview_num ~= 0 then
+		ya.manager_emit("peek", { force = true })
+	end
+
+	state.type = "global"
+	return {state.current_num, state.parent_num, state.preview_num}
+
+end)
+
+local init_normal_action = ya.sync(function(state,action)
+
+	if #SINGLE_KEYS >= Current.area.h then
+		state.current_num = Current.area.h -- Fast path
+	else
+		state.current_num = #Folder:by_kind(Folder.CURRENT).window
+		if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+			state.current_num = count_files(cx.active.current.cwd, Current.area.h)
+		end
+	end
+	state.type = action
+	return state.current_num
+end)
+
 return {
-	entry = function(state, args)
+	entry = function(_, args)
 		local action = args[1]
+		local want_exit = false
+		local first_enter = true
 
-		-- local cand = ya.which{ cands = {{on={"a","b"}}}, silent = false }
-		-- ya.err(cand)
-
-		-- while true do
-			
-		-- 	-- not first toggle, fulsh the action
-		-- 	if state.action ~= nil then
-		-- 		action = state.action
-		-- 	end
-
-		-- -- 	-- enter normal, keep or select mode
+		while true do
+			-- enter normal, keep or select mode
 			if not action or action == "keep" or action == "select" then
-				ya.err("hello")
-				init_normal_action(state)
-				ya.err(state.current_num)
-				-- toggle_ui(state)
-				-- read_input_todo(state, state.current_num, "0", "0", state.type)
+				local current_num = init_normal_action(action)
+				if first_enter then 
+					toggle_ui()
+					first_enter = false 
+				end
+				want_exit = read_input_todo(current_num, "0", "0", action)
 			end
 
-		-- 	-- enter global mode
-		-- 	if action == "global" then
-		-- 		init_global_action(state,args[2])
-		-- 		toggle_ui(state)
-		-- 		read_input_todo(state, state.current_num, state.parent_num, state.preview_num, state.type)
-		-- 	end
+			-- enter global mode
+			if action == "global" then
+				local times = args[2]
+				local data = init_global_action(times)
+				if first_enter then 
+					toggle_ui()
+					first_enter = false 
+				end
+				want_exit = read_input_todo(data[1], data[2], data[3], action)
+			end
 			
-			-- if state.exit == true then
-			-- 	break
-			-- else
-			-- 	state.type = action
-			-- end
-			
-		-- end
+			if want_exit == true then
+				break
+			end
+		end
 
-		-- toggle_ui(state)
+		toggle_ui()
 
 	end
 }
