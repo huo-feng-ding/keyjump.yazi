@@ -432,7 +432,7 @@ end
 
 local toggle_ui = ya.sync(function(st)
 	if st.icon or st.mode then
-		Folder.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
+		File.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
 		if st.type == "global" then
 			ya.manager_emit("peek", { force = true })
 		end
@@ -440,8 +440,8 @@ local toggle_ui = ya.sync(function(st)
 		return
 	end
 
-	st.icon, st.mode = Folder.icon, Status.mode
-	Folder.icon = function(self, file)
+	st.icon, st.mode = File.icon, Status.mode
+	File.icon = function(self, file)
 		if st.type == "global" then
 			local pos, view = rel_position(file, "all")
 			if pos == nil then
