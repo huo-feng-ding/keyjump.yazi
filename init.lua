@@ -353,43 +353,6 @@ local GO_CANDS = {
 	-- { on = { "g", "h" },       exec = "cd ~/",          		desc = "Go to  home" },
 }
 
--- debug function
--- local function serialize(obj)
---     local lua = ""
---     local t = type(obj)
---     if t == "number" then
---         lua = lua .. obj
---     elseif t == "boolean" then
---         lua = lua .. tostring(obj)
---     elseif t == "string" then
---         lua = lua .. string.format("%q", obj)
---     elseif t == "table" then
---         lua = lua .. "{"
---         for k, v in pairs(obj) do
---             lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","
---         end
---         local metatable = getmetatable(obj)
---         if metatable ~= nil and type(metatable.__index) == "table" then
---             for k, v in pairs(metatable.__index) do
---                 lua = lua .. "[" .. serialize(k) .. "]=" .. serialize(v) .. ","
---             end
---         end
---         lua = lua .. "}"
---     elseif t == "nil" then
---         return nil
---     else
---         error("can not serialize a " .. t .. " type.")
---     end
---     return lua
--- end
-
--- debug funcion
--- local function table2string(tablevalue)
---     local stringtable = serialize(tablevalue)
---     print(stringtable)
---     return stringtable
--- end
-
 -- FIXME: refactor this to avoid the loop
 local function rel_position(file, view)
 	local folder
@@ -470,6 +433,9 @@ end
 local toggle_ui = ya.sync(function(st)
 	if st.icon or st.mode then
 		Folder.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
+		if st.type == "global" then
+			ya.manager_emit("peek", { force = true })
+		end
 		ya.render()
 		return
 	end
@@ -508,6 +474,11 @@ local toggle_ui = ya.sync(function(st)
 			ui.Span(" KJ-" .. tostring(cx.active.mode):upper() .. " "):style(style),
 		}
 	end
+
+	if st.type == "global" then
+		ya.manager_emit("peek", { force = true })
+	end
+
 	ya.render()
 end)
 
@@ -549,14 +520,8 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 		local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 		if special_key_str == "<Esc>" then
-			if state.type == "global" then
-				ya.manager_emit("peek", { force = true })
-			end
 			return true
 		elseif special_key_str == "z" then
-			if state.type == "global" then
-				ya.manager_emit("peek", { force = true })
-			end
 			return true
 		elseif special_key_str == "<Enter>" then
 			ya.manager_emit("open", {})
@@ -749,6 +714,7 @@ local init_global_action = ya.sync(function(state,arg_times)
 
 	-- "once" or nil,nil means to don't auto exit
 	state.times = arg_times
+	state.type = "global"
 	-- caculate file numbers of current window
 	state.current_num = #Folder:by_kind(Folder.CURRENT).window
 	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
@@ -775,12 +741,6 @@ local init_global_action = ya.sync(function(state,arg_times)
 		count_preview_files(state)
 	end
 
-	-- if preview folder not empty, clear preview folder render cache to show jump key
-	if state.preview_num and state.preview_num ~= 0 then
-		ya.manager_emit("peek", { force = true })
-	end
-
-	state.type = "global"
 	return {state.current_num, state.parent_num, state.preview_num}
 
 end)
