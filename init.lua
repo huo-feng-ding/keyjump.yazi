@@ -467,7 +467,7 @@ local function count_files(url, max)
 	end
 end
 
-local function toggle_ui(st)
+local toggle_ui = ya.sync(function(st)
 	ya.render()
 	if st.icon or st.mode then
 		Folder.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
@@ -508,7 +508,8 @@ local function toggle_ui(st)
 			ui.Span(" KJ-" .. tostring(cx.active.mode):upper() .. " "):style(style),
 		}
 	end
-end
+
+end)
 
 
 local function split_yazi_cmd_arg(cmd)
@@ -538,6 +539,7 @@ end
 
 local init_normal_action = ya.sync(function(state)
 
+	ya.err("#11")
 	if #SINGLE_KEYS >= Current.area.h then
 		state.current_num = Current.area.h -- Fast path
 	else
@@ -546,8 +548,6 @@ local init_normal_action = ya.sync(function(state)
 			state.current_num = count_files(cx.active.current.cwd, Current.area.h)
 		end
 	end
-
-	state.type = action
 end)
 
 local init_global_action = ya.sync(function(state,arg_times)
@@ -584,9 +584,6 @@ local init_global_action = ya.sync(function(state,arg_times)
 	if state.preview_num and state.preview_num ~= 0 then
 		ya.manager_emit("peek", { force = true })
 	end
-
-	state.type = action
-
 end)
 
 local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num, arg_preview_num)
@@ -743,8 +740,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 end)
 
 
-local function read_input_todo(state,arg_current_num,arg_parent_num,arg_preview_num,arg_type) end
-local read_input_todo = ya.sync(function(state,arg_current_num,arg_parent_num,arg_preview_num,arg_type)
+local function read_input_todo (state, arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 
 	local current_num = tonumber(arg_current_num)
 	local parent_num = tonumber(arg_parent_num~= nil and arg_parent_num or "0")
@@ -804,41 +800,55 @@ local read_input_todo = ya.sync(function(state,arg_current_num,arg_parent_num,ar
 		table.insert(cands, SPECIAL_CANDS[i])
 	end
 
-	local cand = ya.which { cands = cands, silent = true }
+	local cand = ya.which { cands = cands, silent = false }
 
 	if cand == nil then --never auto exit when pressing a nonexistent prompt key
-		read_input_todo(state,arg_current_num,arg_parent_num,arg_preview_num,arg_type)
+		read_input_todo(state, arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 	else
 		apply(state, cand, current_num, parent_num, preview_num)
 	end
 
-end)
+end
 
 return {
 	entry = function(state, args)
 		local action = args[1]
-		while true do
-			-- enter normal, keep or select mode
-			if not action or action == "keep" or action == "select" then
-				init_normal_action(state)
-				toggle_ui(state)
-				read_input_todo(state,state.current_num, "0", "0", state.type)
-			end
 
-			-- enter global mode
-			if action == "global" then
-				init_global_action(state,args[2])
-				toggle_ui(state)
-				read_input_todo(state,state.current_num, state.parent_num, state.preview_num, state.type)
-			end
+		-- local cand = ya.which{ cands = {{on={"a","b"}}}, silent = false }
+		-- ya.err(cand)
+
+		-- while true do
 			
-			if state.exit == true then
-				break
+		-- 	-- not first toggle, fulsh the action
+		-- 	if state.action ~= nil then
+		-- 		action = state.action
+		-- 	end
+
+		-- -- 	-- enter normal, keep or select mode
+			if not action or action == "keep" or action == "select" then
+				ya.err("hello")
+				init_normal_action(state)
+				ya.err(state.current_num)
+				-- toggle_ui(state)
+				-- read_input_todo(state, state.current_num, "0", "0", state.type)
 			end
 
-		end
+		-- 	-- enter global mode
+		-- 	if action == "global" then
+		-- 		init_global_action(state,args[2])
+		-- 		toggle_ui(state)
+		-- 		read_input_todo(state, state.current_num, state.parent_num, state.preview_num, state.type)
+		-- 	end
+			
+			-- if state.exit == true then
+			-- 	break
+			-- else
+			-- 	state.type = action
+			-- end
+			
+		-- end
 
-		toggle_ui(state)
+		-- toggle_ui(state)
 
 	end
 }
