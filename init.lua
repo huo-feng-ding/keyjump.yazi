@@ -103,8 +103,8 @@ local GLOBAL_PREVIEW_DOUBLE_KEYS = {
 local GLOBAL_PARRENT_DOUBLE_KEYS = {
 	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
-	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
-	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
+	"rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm", "xp", "xy", "xm", 
+	"tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
 
 	-- left hand double key
 	"dt","se","sw",
@@ -307,7 +307,6 @@ local GLOBAL_PARENT_DOUBLE_CANDS = {
 	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
 	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
 	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
-	{ on = { "g", "p" } }, { on = { "g", "y" } }, { on = { "g", "m" } },
 	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
 	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
 	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
