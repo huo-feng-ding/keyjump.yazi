@@ -4,6 +4,7 @@ A Yazi plugin like flash.nvim in Neovim, allows precise navigation using single 
 
 > [!NOTE]
 > The latest main branch of Yazi is required at the moment.
+> 
 > The plug-in has been converted to asynchronous plug-in, so if you configured the `--sync` parameter before, please remove this parameter
 
 
