@@ -542,17 +542,25 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("select", { state = toggle_state })
 			ya.manager_emit("arrow", { 1 })
 			return false
-		elseif special_key_str == "h" and state.type == "global" then
-			ya.manager_emit("leave", {})
+		elseif special_key_str == "h"then
+			if state.type == "global" then
+				ya.manager_emit("leave", {})
+			end
 			return false
-		elseif special_key_str == "j" and state.type == "global" then
-			ya.manager_emit("arrow", { "1" })
+		elseif special_key_str == "j"then
+			if state.type == "global" then
+				ya.manager_emit("arrow", { "1" })
+			end
 			return false
-		elseif special_key_str == "k" and state.type == "global" then
-			ya.manager_emit("arrow", { "-1" })
+		elseif special_key_str == "k"then
+			if state.type == "global" then
+				ya.manager_emit("arrow", { "-1" })
+			end
 			return false
-		elseif special_key_str == "l" and state.type == "global" then
-			ya.manager_emit("enter", {})
+		elseif special_key_str == "l"then
+			if state.type == "global" then			
+				ya.manager_emit("enter", {})
+			end
 			return false
 		elseif special_key_str == "J" then
 			ya.manager_emit("arrow", { "5" })
