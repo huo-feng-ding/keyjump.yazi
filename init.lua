@@ -431,10 +431,6 @@ end
 
 local toggle_ui = ya.sync(function(st)
 
-	if (st.icon_fg == nil) then
-		st.icon_fg = "#fda1a1"
-	end
-
 	if st.icon or st.mode then
 		File.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
 		if st.type == "global" then
@@ -445,6 +441,10 @@ local toggle_ui = ya.sync(function(st)
 	end
 
 	st.icon, st.mode = File.icon, Status.mode
+	if (st.icon_fg == nil) then
+		st.icon_fg = "#fda1a1"
+	end
+
 	File.icon = function(self, file)
 		if st.type == "global" then
 			local pos, view = rel_position(file, "all")
