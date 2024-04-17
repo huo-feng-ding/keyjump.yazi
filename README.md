@@ -116,5 +116,12 @@ run  = "plugin keyjump --args='global once'"
 desc = "Keyjump (once Global mode)"
 ```
 
+## opts setting (~/.config/yazi/init.lua)
+```lua
+require("keyjump"):setup {
+	icon_fg = "#fda1a1",
+}
+```
+
 When you see some character(singal character or double character) in left of the entry.
 Press the key of the character will jump to the corresponding entry

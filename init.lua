@@ -430,6 +430,11 @@ local function count_files(url, max)
 end
 
 local toggle_ui = ya.sync(function(st)
+
+	if (st.icon_fg == nil) then
+		st.icon_fg = "#fda1a1"
+	end
+
 	if st.icon or st.mode then
 		File.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
 		if st.type == "global" then
@@ -446,22 +451,22 @@ local toggle_ui = ya.sync(function(st)
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Line { ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]):fg(st.icon_fg),ui.Span(" " .. file:icon().text .. " ")}
 			elseif view == "parent" then
-				return ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Line { ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]):fg(st.icon_fg),ui.Span(" " .. file:icon().text .. " ")}
 			elseif view == "preview" then
-				return ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return ui.Line { ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]):fg(st.icon_fg),ui.Span(" " .. file:icon().text .. " ")}
 			end
 		else
 			local pos = rel_position(file, "current")
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. NORMAL_DOUBLE_KEYS[pos] .. " ")
-					or ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Line {ui.Span(" " .. file:icon().text .. " "),ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " "):fg(st.icon_fg)}
+					or ui.Line{ui.Span(NORMAL_DOUBLE_KEYS[pos]):fg(st.icon_fg),ui.Span(" " .. file:icon().text .. " ")}
 			else
-				return st.type == nil and ui.Span(" " .. file:icon().text .. " " .. SINGLE_KEYS[pos] .. " ")
-					or ui.Span(SINGLE_KEYS[pos] .. " " .. file:icon().text .. " ")
+				return st.type == nil and ui.Line {ui.Span(" " .. file:icon().text .. " "),ui.Span(SINGLE_KEYS[pos] .. " "):fg(st.icon_fg)}
+					or ui.Line {ui.Span(SINGLE_KEYS[pos]):fg(st.icon_fg),ui.Span(" " .. file:icon().text .. " ")}
 			end
 		end
 	end
@@ -767,7 +772,17 @@ local init_normal_action = ya.sync(function(state,action)
 end)
 
 return {
+	setup = function(state, opts)
+		-- Save the user configuration to the plugin's state
+		if (opts ~= nil and opts.icon_fg ~= nil ) then
+			state.icon_fg  = opts.icon_fg 
+		else 
+			state.icon_fg = "#fda1a1"
+		end
+	end,
+
 	entry = function(_, args)
+
 		local action = args[1]
 		local want_exit = false
 		local first_enter = true
