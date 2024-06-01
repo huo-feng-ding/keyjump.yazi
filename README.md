@@ -1,6 +1,6 @@
 # keyjump.yazi
 
-A Yazi plugin like flash.nvim in Neovim, allows precise navigation using single (or double) characters.
+A Yazi plugin that allows jumping to a line by typing a hint character, much like hop.nvim
 
 > [!NOTE]
 > The latest main branch of Yazi is required at the moment.
