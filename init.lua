@@ -342,14 +342,14 @@ local GLOBAL_PARENT_DOUBLE_CANDS = {
 
 -- use g + <key> to exec yazi cmd
 local GO_CANDS = {
-	-- { on = { "g", "c" },       exec = "cd ~/.config",     desc = "Go to config" },
-	-- { on = { "g", "r" },       exec = "cd /",          desc = "Go to /" },
-	-- { on = { "g", "d" },       exec = "cd ~/down",          desc = "Go to down" },
-	-- { on = { "g", "i" },       exec = "cd ~/Images",          desc = "Go to Image" },
-	-- { on = { "g", "f" },       exec = "cd ~/file",          desc = "Go to file" },
-	-- { on = { "g", "u" },       exec = "cd /media/UUI",          desc = "Go to U" },
-	-- { on = { "g", "l" },       exec = "cd ~/_install",          desc = "Go to install" },
-	-- { on = { "g", "h" },       exec = "cd ~/",          		desc = "Go to  home" },
+	-- { on = { "g", "c" },       run = "cd ~/.config",     desc = "Go to config" },
+	-- { on = { "g", "r" },       run = "cd /",          desc = "Go to /" },
+	-- { on = { "g", "d" },       run = "cd ~/down",          desc = "Go to down" },
+	-- { on = { "g", "i" },       run = "cd ~/Images",          desc = "Go to Image" },
+	-- { on = { "g", "f" },       run = "cd ~/file",          desc = "Go to file" },
+	-- { on = { "g", "u" },       run = "cd /media/UUI",          desc = "Go to U" },
+	-- { on = { "g", "l" },       run = "cd ~/_install",          desc = "Go to install" },
+	-- { on = { "g", "h" },       run = "cd ~/",          		desc = "Go to  home" },
 }
 
 -- FIXME: refactor this to avoid the loop
@@ -655,6 +655,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 	local preview_num = tonumber(arg_preview_num ~= nil and arg_preview_num or "0")
 	local type = arg_type
 	local current_cands, parent_cands, preview_cands, cands = {}, {}, {}, {}
+	local cand = nil
 
 	-- generate cands of entry of current window
 	if current_num == 0 then
@@ -708,13 +709,14 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 		table.insert(cands, SPECIAL_CANDS[i])
 	end
 
-	local cand = ya.which { cands = cands, silent = true }
-
-	if cand == nil then --never auto exit when pressing a nonexistent prompt key
-		read_input_todo(arg_current_num,arg_parent_num,arg_preview_num,arg_type)
-	else
-		return apply(cand, current_num, parent_num, preview_num)
+	while true do
+		cand = ya.which { cands = cands, silent = true }
+		if cand ~= nil then
+			break
+		end
 	end
+
+	return apply(cand, current_num, parent_num, preview_num)
 
 end
 
