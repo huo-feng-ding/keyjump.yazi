@@ -443,27 +443,31 @@ local toggle_ui = ya.sync(function(st)
 	st.icon, st.mode = File.icon, Status.mode
 
 	File.icon = function(self, file)
+
+		local icon = file:icon()
+		local span_icon_before = ui.Span(" " .. file:icon().text .. " "):style(icon.style)
+		
 		if st.type == "global" then
 			local pos, view = rel_position(file, "all")
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Line { ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),ui.Span(" " .. file:icon().text .. " ")}
+				return ui.Line { ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
 			elseif view == "parent" then
-				return ui.Line { ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),ui.Span(" " .. file:icon().text .. " ")}
+				return ui.Line { ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
 			elseif view == "preview" then
-				return ui.Line { ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),ui.Span(" " .. file:icon().text .. " ")}
+				return ui.Line { ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
 			end
 		else
 			local pos = rel_position(file, "current")
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Line {ui.Span(" " .. file:icon().text .. " "),ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line{ui.Span(NORMAL_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),ui.Span(" " .. file:icon().text .. " ")}
+				return st.type == nil and ui.Line {span_icon_before,ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
+					or ui.Line{ui.Span(NORMAL_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
 			else
-				return st.type == nil and ui.Line {ui.Span(" " .. file:icon().text .. " "),ui.Span(SINGLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line {ui.Span(SINGLE_KEYS[pos]):fg(st.opt_icon_fg),ui.Span(" " .. file:icon().text .. " ")}
+				return st.type == nil and ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
+					or ui.Line {ui.Span(SINGLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
 			end
 		end
 	end
