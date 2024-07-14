@@ -433,7 +433,7 @@ local toggle_ui = ya.sync(function(st)
 
 	if st.icon or st.mode then
 		File.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
-		if st.type == "global" then
+		if st.type == "global" and Folder:by_kind(Folder.PREVIEW) then
 			ya.manager_emit("peek", { force = true })
 		end
 		ya.render()
@@ -452,11 +452,11 @@ local toggle_ui = ya.sync(function(st)
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Line { ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
+				return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			elseif view == "parent" then
-				return ui.Line { ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
+				return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			elseif view == "preview" then
-				return ui.Line { ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
+				return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			end
 		else
 			local pos = rel_position(file, "current")
@@ -464,10 +464,10 @@ local toggle_ui = ya.sync(function(st)
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
 				return st.type == nil and ui.Line {span_icon_before,ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line{ui.Span(NORMAL_DOUBLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
+					or ui.Line{span_icon_before,ui.Span(NORMAL_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			else
 				return st.type == nil and ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line {ui.Span(SINGLE_KEYS[pos]):fg(st.opt_icon_fg),span_icon_before}
+					or ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			end
 		end
 	end
@@ -480,7 +480,7 @@ local toggle_ui = ya.sync(function(st)
 		}
 	end
 
-	if st.type == "global" then
+	if st.type == "global" and Folder:by_kind(Folder.PREVIEW) then
 		ya.manager_emit("peek", { force = true })
 	end
 
