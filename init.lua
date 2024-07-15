@@ -762,14 +762,11 @@ end)
 
 local init_normal_action = ya.sync(function(state,action)
 
-	if #SINGLE_KEYS >= Current.area.h then
-		state.current_num = Current.area.h -- Fast path
-	else
-		state.current_num = #Folder:by_kind(Folder.CURRENT).window
-		if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-			state.current_num = count_files(cx.active.current.cwd, Current.area.h)
-		end
+	state.current_num = #Folder:by_kind(Folder.CURRENT).window
+	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
+		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
 	end
+
 	state.type = action
 	return state.current_num
 end)
