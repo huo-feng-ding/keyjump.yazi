@@ -356,7 +356,7 @@ local GO_CANDS = {
 local function rel_position(file, view)
 	local folder
 
-	folder = Folder:by_kind(Folder.CURRENT)
+	folder = cx.active.current
 	if folder then
 		for i, f in ipairs(folder.window) do
 			if f.url == file.url then
@@ -369,7 +369,7 @@ local function rel_position(file, view)
 		return nil, nil
 	end
 
-	folder = Folder:by_kind(Folder.PARENT)
+	folder = cx.active.parent
 	if folder then
 		for i, f in ipairs(folder.window) do
 			if f.url == file.url then
@@ -378,7 +378,7 @@ local function rel_position(file, view)
 		end
 	end
 
-	folder = Folder:by_kind(Folder.PREVIEW)
+	folder = cx.active.preview.folder
 	if folder then
 		for i, f in ipairs(folder.window) do
 			if f.url == file.url then
@@ -432,18 +432,18 @@ end
 local toggle_ui = ya.sync(function(st)
 
 	if st.icon or st.mode then
-		File.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
-		if st.type == "global" and Folder:by_kind(Folder.PREVIEW) then
+		Entity.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
+		if st.type == "global" and cx.active.preview.folder then
 			ya.manager_emit("peek", { force = true })
 		end
 		ya.render()
 		return
 	end
 
-	st.icon, st.mode = File.icon, Status.mode
+	st.icon, st.mode = Entity.icon, Status.mode
 
-	File.icon = function(self, file)
-
+	Entity.icon = function(self)
+		local file = self._file
 		local icon = file:icon()
 		local span_icon_before = file:is_hovered() and ui.Span(" " .. file:icon().text .. " ") or ui.Span(" " .. file:icon().text .. " "):style(icon.style)
 		
@@ -473,14 +473,14 @@ local toggle_ui = ya.sync(function(st)
 	end
 
 	Status.mode = function(self)
-		local style = self.style()
+		local style = self:style()
 		return ui.Line {
 			ui.Span(THEME.status.separator_open):fg(style.bg),
 			ui.Span(" KJ-" .. tostring(cx.active.mode):upper() .. " "):style(style),
 		}
 	end
 
-	if st.type == "global" and Folder:by_kind(Folder.PREVIEW) then
+	if st.type == "global" and cx.active.preview.folder then
 		ya.manager_emit("peek", { force = true })
 	end
 
@@ -502,7 +502,7 @@ local function split_yazi_cmd_arg(cmd)
 end
 
 local function count_preview_files(st)
-	local folder = Folder:by_kind(Folder.CURRENT)
+	local folder = cx.active.current
 	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	if under_cursor_file and under_cursor_file.cha.is_dir then
@@ -519,7 +519,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	local parent_entry_num = tonumber(arg_parent_num)
 	local preview_entry_num = tonumber(arg_preview_num)
 	local go_num = #GO_CANDS
-	local folder = Folder:by_kind(Folder.CURRENT)
+	local folder = cx.active.current
 
 	-- hit specail key
 	if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
@@ -543,7 +543,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("arrow", { "1" })
 			return false
 		elseif special_key_str == "<Space>" then
-			local under_cursor_file = Folder:by_kind(Folder.CURRENT).window[folder.cursor - folder.offset + 1]
+			local under_cursor_file = cx.active.current.window[folder.cursor - folder.offset + 1]
 			local toggle_state = under_cursor_file:is_selected() and "false" or "true"
 			ya.manager_emit("select", { state = toggle_state })
 			ya.manager_emit("arrow", { 1 })
@@ -593,17 +593,17 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	if state.type == "global" then
 		-- hit current area
 		if cand <= current_entry_num then -- hit normal key
-			local current_folder = Folder:by_kind(Folder.CURRENT)
+			local current_folder = cx.active.current
 			ya.manager_emit("arrow", { cand - 1 + current_folder.offset - current_folder.cursor })
 		-- hit parent area
 		elseif cand > current_entry_num and cand <= (current_entry_num + parent_entry_num) then
-			local parent_folder = Folder:by_kind(Folder.PARENT)
+			local parent_folder = cx.active.parent
 			ya.manager_emit("leave", {})
 			ya.manager_emit("arrow", { cand - current_entry_num - 1 + parent_folder.offset - parent_folder.cursor })
 		-- hit preview area
 		elseif
 			cand > (current_entry_num + parent_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num) then
-			local preview_folder = Folder:by_kind(Folder.PREVIEW)
+			local preview_folder = cx.active.preview.folder
 			ya.manager_emit("enter", {})
 			ya.manager_emit(
 				"arrow",
@@ -628,7 +628,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	-- apply select mode
 	if state.type == "select" then
 		if cand <= current_entry_num then -- hit normal key
-			local folder = Folder:by_kind(Folder.CURRENT)
+			local folder = cx.active.current
 			ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 		end
 
@@ -642,7 +642,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 
 	-- keep mode will auto enter when select folder and continue keep mode
 	if state.type == "keep" and folder.window[cand].cha.is_dir then
-		local folder = Folder:by_kind(Folder.CURRENT)
+		local folder = cx.active.current
 		ya.manager_emit("enter", {})
 		return false
 	else
@@ -731,14 +731,14 @@ local init_global_action = ya.sync(function(state,arg_times)
 	state.times = arg_times
 	state.type = "global"
 	-- caculate file numbers of current window
-	state.current_num = #Folder:by_kind(Folder.CURRENT).window
+	state.current_num = #cx.active.current.window
 	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
 		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
 	end
 
 	-- caculate file numbers of parent window
-	if Folder:by_kind(Folder.PARENT) ~= nil then
-		state.parent_num = #Folder:by_kind(Folder.PARENT).window
+	if cx.active.parent ~= nil then
+		state.parent_num = #cx.active.parent.window
 		if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
 			state.parent_num = count_files(cx.active.parent.cwd, Parent.area.h)
 		end
@@ -747,8 +747,8 @@ local init_global_action = ya.sync(function(state,arg_times)
 	end
 
 	-- caculate file numbers of preview window
-	if Folder:by_kind(Folder.PREVIEW) ~= nil then
-		state.preview_num = #Folder:by_kind(Folder.PREVIEW).window
+	if cx.active.preview.folder ~= nil then
+		state.preview_num = #cx.active.preview.folder.window
 		if state.preview_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
 			count_preview_files(state)
 		end
@@ -762,9 +762,9 @@ end)
 
 local init_normal_action = ya.sync(function(state,action)
 
-	state.current_num = #Folder:by_kind(Folder.CURRENT).window
-	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
+	state.current_num = #cx.active.current.window
+	if state.current_num < ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
+		state.current_num = count_files(cx.active.current.cwd, ui.Rect.default.h)
 	end
 
 	state.type = action
