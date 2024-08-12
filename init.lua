@@ -431,6 +431,11 @@ end
 
 local toggle_ui = ya.sync(function(st)
 
+	if st.keep_hook then
+		ya.render()
+		return
+	end
+
 	if st.icon or st.mode then
 		Entity.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
 		if st.type == "global" and cx.active.preview.folder then
@@ -506,7 +511,7 @@ local function count_preview_files(st)
 	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	if under_cursor_file and under_cursor_file.cha.is_dir then
-		st.preview_num = count_files(tostring(under_cursor_file.url), Preview.area.h)
+		st.preview_num = count_files(tostring(under_cursor_file.url), ui.Rect.default.h)
 	else
 		st.preview_num = 0
 	end
@@ -732,15 +737,15 @@ local init_global_action = ya.sync(function(state,arg_times)
 	state.type = "global"
 	-- caculate file numbers of current window
 	state.current_num = #cx.active.current.window
-	if state.current_num <= Current.area.h then -- Maybe the folder has not been full loaded yet
-		state.current_num = count_files(cx.active.current.cwd, Current.area.h)
+	if state.current_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
+		state.current_num = count_files(cx.active.current.cwd, ui.Rect.default.h)
 	end
 
 	-- caculate file numbers of parent window
 	if cx.active.parent ~= nil then
 		state.parent_num = #cx.active.parent.window
-		if state.parent_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
-			state.parent_num = count_files(cx.active.parent.cwd, Parent.area.h)
+		if state.parent_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
+			state.parent_num = count_files(cx.active.parent.cwd, ui.Rect.default.h)
 		end
 	else
 		state.parent_num = 0
@@ -749,7 +754,7 @@ local init_global_action = ya.sync(function(state,arg_times)
 	-- caculate file numbers of preview window
 	if cx.active.preview.folder ~= nil then
 		state.preview_num = #cx.active.preview.folder.window
-		if state.preview_num <= Parent.area.h then -- Maybe the folder has not been full loaded yet
+		if state.preview_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
 			count_preview_files(state)
 		end
 	else
@@ -777,8 +782,50 @@ local set_opts_default = ya.sync(function(state)
 	end
 end)
 
+local go_again = ya.sync(function(state)
+	state.again = true
+end)
+
+local set_keep_hook = ya.sync(function(state,status)
+	state.keep_hook = status
+end)
+
+local remove_cwd_status_watch = ya.sync(function(state)
+	Header:children_remove(state.header_status_id)
+end)
+
+local clear_state = ya.sync(function (state)
+	state.again = nil
+	state.keep_hook = nil
+	state.header_status_id = nil
+	state.times = nil
+	state.current_num = nil
+	state.parent_num = nil
+	state.parent_num = nil
+	state.type = nil
+end)
+
+local add_cwd_status_watch = ya.sync(function(state)
+
+	if state.header_status_id ~= nil then
+		return
+	end
+
+	local function cwd_status(self)
+			
+		if #cx.active.current.window >0 and state.again then
+			state.again = false
+			local times = state.times and state.times or ""
+			ya.manager_emit("plugin", { "keyjump", args = ya.quote(state.type).." "..times})	
+		end
+		return {}
+	end
+	state.header_status_id = Header:children_add(cwd_status,200,Header.LEFT)
+end)
+
 return {
 	setup = function(state, opts)
+
 		-- Save the user configuration to the plugin's state
 		if (opts ~= nil and opts.icon_fg ~= nil ) then
 			state.opt_icon_fg  = opts.icon_fg
@@ -788,36 +835,33 @@ return {
 	entry = function(_, args)
 
 		set_opts_default()
+		add_cwd_status_watch()
 
 		local action = args[1]
 		local want_exit = false
-		local first_enter = true
 
-		while true do
-			-- enter normal, keep or select mode
-			if not action or action == "keep" or action == "select" then
-				local current_num = init_normal_action(action)
-				if first_enter then 
-					toggle_ui()
-					first_enter = false 
-				end
-				want_exit = read_input_todo(current_num, "0", "0", action)
-			end
-
-			-- enter global mode
-			if action == "global" then
-				local times = args[2]
-				local data = init_global_action(times)
-				if first_enter then 
-					toggle_ui()
-					first_enter = false 
-				end
-				want_exit = read_input_todo(data[1], data[2], data[3], action)
-			end
-			
-			if want_exit == true then
-				break
-			end
+		-- enter normal, keep or select mode
+		if not action or action == "keep" or action == "select" then
+			local current_num = init_normal_action(action)
+			toggle_ui()
+			want_exit = read_input_todo(current_num, "0", "0", action)
+		end
+		-- enter global mode
+		if action == "global" then
+			local times = args[2]
+			local data = init_global_action(times)
+			toggle_ui()
+			want_exit = read_input_todo(data[1], data[2], data[3], action)
+		end
+		
+		
+		if want_exit == false then
+			set_keep_hook(true)
+			go_again()
+		else
+			set_keep_hook(false)
+			remove_cwd_status_watch()
+			clear_state()
 		end
 
 		toggle_ui()
