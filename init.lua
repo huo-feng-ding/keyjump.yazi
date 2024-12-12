@@ -457,11 +457,14 @@ local toggle_ui = ya.sync(function(st)
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				return ui.Line {ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg), span_icon_before}
+				-- return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			elseif view == "parent" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				return ui.Line {ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg), span_icon_before}
+				-- return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			elseif view == "preview" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				return ui.Line {ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg), span_icon_before}
+				-- return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			end
 		else
 			local pos = rel_position(file, "current")
