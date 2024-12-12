@@ -533,7 +533,12 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		elseif special_key_str == "z" then
 			return true
 		elseif special_key_str == "<Enter>" then
-			ya.manager_emit("open", {})
+			local under_cursor_file = cx.active.current.window[folder.cursor - folder.offset + 1]
+			if under_cursor_file.cha.is_dir then
+				ya.manager_emit("enter", {})
+			else
+				ya.manager_emit("open", {})
+			end
 			return true
 		elseif special_key_str == "<Left>" then
 			ya.manager_emit("leave", {})
