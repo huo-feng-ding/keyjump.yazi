@@ -521,6 +521,12 @@ local function count_preview_files(st)
 	end
 end
 
+local function jk_around(direction)
+	local current = cx.active.current
+	local new = (current.cursor + direction) % #current.files
+	ya.manager_emit("arrow", { new - current.cursor })
+end
+
 local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num, arg_preview_num)
 
 	local cand = tonumber(arg_cand)
@@ -552,10 +558,12 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("enter", {})
 			return false
 		elseif special_key_str == "<Up>" then
-			ya.manager_emit("arrow", { "-1" })
+			--ya.manager_emit("arrow", { "-1" })
+			jk_around(-1)
 			return false
 		elseif special_key_str == "<Down>" then
-			ya.manager_emit("arrow", { "1" })
+			--ya.manager_emit("arrow", { "1" })
+			jk_around(1)
 			return false
 		elseif special_key_str == "<Space>" then
 			local under_cursor_file = cx.active.current.window[folder.cursor - folder.offset + 1]
@@ -570,12 +578,14 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			return false
 		elseif special_key_str == "j" then
 			if state.type == "global" then
-				ya.manager_emit("arrow", { "1" })
+				--ya.manager_emit("arrow", { "1" })
+				jk_around(1)
 			end
 			return false
 		elseif special_key_str == "k" then
 			if state.type == "global" then
-				ya.manager_emit("arrow", { "-1" })
+				--ya.manager_emit("arrow", { "-1" })
+				jk_around(-1)
 			end
 			return false
 		elseif special_key_str == "l" then
