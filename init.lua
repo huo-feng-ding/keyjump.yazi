@@ -838,8 +838,7 @@ local add_cwd_status_watch = ya.sync(function(state)
 	end
 
 	local function cwd_status(self)
-			
-		if #cx.active.current.window >0 and state.again then
+		if (#cx.active.current.window >0 or state.preview_num == 0) and state.again then
 			state.again = false
 			local times = state.times and state.times or ""
 			ya.manager_emit("plugin", { "keyjump", args = ya.quote(state.type).." "..times})	
