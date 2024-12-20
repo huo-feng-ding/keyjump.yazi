@@ -339,6 +339,10 @@ local GLOBAL_PARENT_DOUBLE_CANDS = {
 	{ on = { "x", "q" } }, { on = { "c", "q" } }, { on = { "b", "w" } },
 }
 
+local GO_MENU_CAND = {
+	{ on = { "g"} },
+}
+
 -- TODO: the async jump is too fast, the current folder may cannot be found
 
 
@@ -513,14 +517,13 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	local current_entry_num = tonumber(arg_current_num)
 	local parent_entry_num = tonumber(arg_parent_num)
 	local preview_entry_num = tonumber(arg_preview_num)
-	local go_num = state.type == "global" and #state.opt_go_table or 0
+	local go_num = state.type == "global" and #GO_MENU_CAND or 0
 	local folder = cx.active.current
 
 	-- hit specail key
 	if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 		local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 		if special_key_str == "<Esc>" then
-			ya.err("sdfsdf")
 			return true
 		elseif special_key_str == "z" then
 			return true
@@ -620,9 +623,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 
 		-- hit go
 		elseif cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
-			local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
-			local cmd = split_yazi_cmd_arg(state.opt_go_table[go_line].run)
-			ya.manager_emit(cmd[1], { cmd[2] }) -- Bug: async action may let 303 unkonw under cursor file
+			return nil
 		end
 
 		-- whether continue global
@@ -661,7 +662,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 end)
 
 
-local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type,go_table)
+local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 
 	local current_num = tonumber(arg_current_num)
 	local parent_num = tonumber(arg_parent_num~= nil and arg_parent_num or "0")
@@ -714,8 +715,8 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 
 	--attach go cands to cands table
 	if type == "global" then
-		for i = 1, #go_table do
-			table.insert(cands, go_table[i])
+		for i = 1, #GO_MENU_CAND do
+			table.insert(cands, GO_MENU_CAND[i])
 		end
 	end
 
@@ -805,10 +806,10 @@ local clear_state = ya.sync(function (state)
 	state.type = nil
 end)
 
-
-local get_go_cand = ya.sync(function (state)
+local get_go_table = ya.sync(function (state)
 	return state.opt_go_table
 end)
+
 
 local add_cwd_status_watch = ya.sync(function(state)
 
@@ -848,24 +849,35 @@ return {
 		local args = job.args
 		local action = args[1]
 		local want_exit = false
-		local go_table = get_go_cand()
 
 		-- enter normal, keep or select mode
 		if not action or action == "keep" or action == "select" then
 			local current_num = init_normal_action(action)
 			toggle_ui()
-			want_exit = read_input_todo(current_num, "0", "0", action,go_table)
+			want_exit = read_input_todo(current_num, "0", "0", action)
 		end
 		-- enter global mode
 		if action == "global" then
 			local times = args[2]
 			local data = init_global_action(times)
 			toggle_ui()
-			want_exit = read_input_todo(data[1], data[2], data[3], action,go_table)
+			want_exit = read_input_todo(data[1], data[2], data[3], action)
 		end
 		
-		
-		if want_exit == false then
+		if want_exit == nil then
+			local go_table = get_go_table()
+			local cand
+			while true do
+				cand = ya.which { cands = go_table, silent = false }
+				if cand ~= nil then
+					break
+				end
+			end
+			local cmd = split_yazi_cmd_arg(go_table[cand].run)
+			ya.manager_emit(cmd[1], { cmd[2] }) 
+			set_keep_hook(true)
+			go_again()
+		elseif want_exit == false then
 			set_keep_hook(true)
 			go_again()
 		else
