@@ -131,6 +131,31 @@ local GLOBAL_PARRENT_DOUBLE_KEYS = {
 
 }
 
+local INPUT_CANDS = {
+	{ on = "a" }, { on = "b" }, { on = "c" }, { on = "d" }, { on = "e" },
+	{ on = "f" }, { on = "g" }, { on = "h" }, { on = "i" }, { on = "j" },
+	{ on = "k" }, { on = "l" }, { on = "m" }, { on = "n" }, { on = "o" },
+	{ on = "p" }, { on = "q" }, { on = "r" }, { on = "s" }, { on = "t" },
+	{ on = "u" }, { on = "v" }, { on = "w" }, { on = "x" }, { on = "y" },
+	{ on = "z" }, { on = "<Esc>" },{ on = "<Backspace>" },{ on = "<Space>" },
+	{ on = "<Enter>" },
+	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" }, { on = "<Down>" },
+	{ on = "<A-j>" }, { on = "<A-k>" },
+	{ on = "<C-j>" }, { on = "<C-k>" },
+	{ on = "J" }, { on = "K" },
+
+}
+
+local INPUT_KEY = {
+	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+	"o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "<Esc>","<Backspace>","<Space>",
+	"<Enter>",
+	"<Left>", "<Right>" , "<Up>" , "<Down>" ,
+	"<A-j>", "<A-k>" ,
+	"<C-j>", "<C-k>" ,
+	"J", "K",
+}
+
 -- stylua: ignore
 local SPECIAL_CANDS = {
 	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
@@ -343,6 +368,7 @@ local GO_MENU_CAND = {
 	{ on = { "g"} },
 }
 
+
 -- TODO: the async jump is too fast, the current folder may cannot be found
 
 
@@ -452,22 +478,36 @@ local toggle_ui = ya.sync(function(st)
 			if pos == nil then
 				return st.icon(self, file)
 			elseif view == "current" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				if st.double_first_key ~= nil and GLOBAL_CURRENT_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
+				else
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				end
 			elseif view == "parent" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				if st.double_first_key ~= nil and GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
+				else
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				end
 			elseif view == "preview" then
-				return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				if st.double_first_key ~= nil and GLOBAL_PREVIEW_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
+				else
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PREVIEW_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				end
 			end
 		else
 			local pos = rel_position(file, "current")
 			if not pos then
 				return st.icon(self, file)
 			elseif st.current_num > #SINGLE_KEYS then
-				return st.type == nil and ui.Line {span_icon_before,ui.Span(NORMAL_DOUBLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line{span_icon_before,ui.Span(NORMAL_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				if st.double_first_key ~= nil and NORMAL_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
+					return ui.Line {span_icon_before, ui.Span(NORMAL_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(NORMAL_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
+				else
+					return ui.Line {span_icon_before, ui.Span(NORMAL_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				end
 			else
-				return st.type == nil and ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos] .. " "):fg(st.opt_icon_fg)}
-					or ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+				return ui.Line {span_icon_before,ui.Span(SINGLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 			end
 		end
 	end
@@ -661,6 +701,9 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 
 end)
 
+local update_double_first_key = ya.sync(function(state, str)
+	state.double_first_key = str
+end)
 
 local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
 
@@ -670,13 +713,23 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 	local type = arg_type
 	local current_cands, parent_cands, preview_cands, cands = {}, {}, {}, {}
 	local cand = nil
+	local is_signal_cand = true
+	local pos,pos2
+	local key_num_count = 0
+	local key,double_key
+	local first_key_of_lable = {}
+	local special_and_go_key = {}
+	local cands_count = 0
+
 
 	-- generate cands of entry of current window
 	if current_num == 0 then
 		current_cands = {}
 	elseif type == "global" then -- global mode disable signal key
+		is_signal_cand = false
 		current_cands = { table.unpack(GLOBAL_CURRENT_DOUBLE_CANDS, 1, current_num) }
 	elseif current_num > #SINGLE_KEYS then
+		is_signal_cand = false
 		current_cands = { table.unpack(NORMAL_DOUBLE_CANDS, 1, current_num) }
 	else
 		current_cands = { table.unpack(SIGNAL_CANDS, 1, current_num) }
@@ -684,6 +737,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 
 	-- generate cands of entry of parent window
 	if parent_num ~= nil and parent_num ~= 0 then
+		is_signal_cand = false
 		parent_cands = { table.unpack(GLOBAL_PARENT_DOUBLE_CANDS, 1, parent_num) }
 	else
 		parent_cands = {}
@@ -692,6 +746,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 
 	-- generate cands of entry of preview window
 	if preview_num ~= nil and preview_num ~= 0 then
+		is_signal_cand = false
 		preview_cands = { table.unpack(GLOBAL_PREVIEW_DOUBLE_CANDS, 1, preview_num) }
 	else
 		preview_cands = {}
@@ -700,39 +755,131 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 
 	--attach current cands to cands table
 	for i = 1, #current_cands do
-		table.insert(cands, current_cands[i])
+		local sec1 = is_signal_cand and current_cands[i].on.."-" or current_cands[i].on[1]
+		local sec2 = is_signal_cand and "" or current_cands[i].on[2] or ""
+		local seca = sec1 .. sec2
+		first_key_of_lable[sec1] = ""
+		cands_count =  cands_count + 1
+		cands[seca] = cands_count
 	end
 
 	--attach parent cands to cands table
 	for i = 1, #parent_cands do
-		table.insert(cands, parent_cands[i])
+		local sec1 = parent_cands[i].on[1]
+		local sec2 = parent_cands[i].on[2] or ""
+		local seca = sec1 .. sec2
+		first_key_of_lable[sec1] = ""
+		cands_count =  cands_count + 1
+		cands[seca] = cands_count
 	end
 
 	--attach preview cands to cands table
 	for i = 1, #preview_cands do
-		table.insert(cands, preview_cands[i])
+		local sec1 = preview_cands[i].on[1]
+		local sec2 = preview_cands[i].on[2] or ""
+		local seca = sec1 .. sec2
+		first_key_of_lable[sec1] = ""
+		cands_count =  cands_count + 1
+		cands[seca] = cands_count
 	end
 
 	--attach go cands to cands table
 	if type == "global" then
 		for i = 1, #GO_MENU_CAND do
-			table.insert(cands, GO_MENU_CAND[i])
+			local sec1 = GO_MENU_CAND[i].on[1]
+			local sec2 = GO_MENU_CAND[i].on[2] or ""
+			local seca = sec1 .. sec2
+			first_key_of_lable[sec1] = ""
+			cands_count =  cands_count + 1
+			cands[seca] = cands_count
+			special_and_go_key[sec1] = ""
 		end
 	end
 
 	--attach special cands to cands table
-	for i = 1, #SPECIAL_KEYS do --attach special key
-		table.insert(cands, SPECIAL_CANDS[i])
+	for i = 1, #SPECIAL_CANDS do --attach special key
+		local sec1 = SPECIAL_CANDS[i].on
+		local seca = sec1
+		first_key_of_lable[sec1] = ""
+		cands_count =  cands_count + 1
+		cands[seca] = cands_count
+		special_and_go_key[sec1] = ""
 	end
 
 	while true do
-		cand = ya.which { cands = cands, silent = true }
-		if cand ~= nil then
+		cand = ya.which { cands = INPUT_CANDS, silent = true }
+		-- not candy key, continue get input
+		if cand == nil then
+			goto nextkey
+		end
+
+		-- hit exit easyjump
+		if INPUT_KEY[cand] == "<Esc>" or INPUT_KEY[cand] == "z"  then
+			key = INPUT_KEY[cand]	
+			pos = cands[key]
 			break
 		end
-	end
 
-	return apply(cand, current_num, parent_num, preview_num)
+		-- hit singal key or specail key in singal label mode
+		if is_signal_cand then
+			key = INPUT_KEY[cand]	
+			pos = cands[key.."-"]
+			pos2 = cands[key]
+			if pos then
+				break
+			elseif pos2 then
+				pos = pos2
+				break
+			else
+				goto nextkey
+			end
+		end
+
+		-- hit special key in double label mode
+		if key_num_count == 0 and special_and_go_key[INPUT_KEY[cand]] then
+			key = INPUT_KEY[cand]
+			pos = cands[key]
+			break
+		end
+
+		-- hit backout a double key
+		if INPUT_KEY[cand] == "<Backspace>" and not is_signal_cand then
+			key_num_count = 0 -- backout to get the first double key
+			update_double_first_key(nil) -- apply to the render change for first key
+			goto nextkey
+		end
+
+		-- hit the first double key
+		if key_num_count == 0 and not is_signal_cand then
+			key = INPUT_KEY[cand]
+			if first_key_of_lable[key] then	 
+				key_num_count =  key_num_count + 1		
+				update_double_first_key(key) -- apply to the render change for first key
+				ya.manager_emit("peek", { force = true })
+			else
+				key_num_count = 0 -- get the first double key fail, continue to get it
+			end
+			goto nextkey
+		end
+
+		-- hit the second double key
+		if key_num_count == 1 and not is_signal_cand then
+
+			double_key = key .. INPUT_KEY[cand]
+			pos = cands[double_key]
+
+			if pos == nil then -- get the second double key fail, continue to get it
+				goto nextkey
+			else
+				update_double_first_key(nil)
+				ya.manager_emit("peek", { force = true })
+				break
+			end
+		end
+
+		::nextkey::
+	end
+	return apply(pos, current_num, parent_num, preview_num)
 
 end
 
@@ -804,6 +951,7 @@ local clear_state = ya.sync(function (state)
 	state.parent_num = nil
 	state.parent_num = nil
 	state.type = nil
+	state.double_first_key = nil
 end)
 
 local get_go_table = ya.sync(function (state)
@@ -835,6 +983,13 @@ return {
 		else
 			state.opt_icon_fg  = opts.icon_fg
 		end
+		if (opts == nil or opts.first_key_fg == nil) then
+			state.opt_first_key_fg = "#ffff33"
+		else
+			state.opt_first_key_fg  = opts.first_key_fg
+		end
+		
+
 		if (opts == nil or opts.go_table == nil) then
 			state.opt_go_table = {}
 
@@ -877,7 +1032,7 @@ return {
 			ya.manager_emit(cmd[1], { cmd[2] }) 
 			set_keep_hook(true)
 			go_again()
-		elseif want_exit == false then
+		elseif want_exit == false and action and action ~= "" then
 			set_keep_hook(true)
 			go_again()
 		else
