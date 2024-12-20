@@ -60,6 +60,7 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 "y" : yank (global)
 "p" : paste(global)
 
+"g" : open go menu which defined in go_table option(global)
 
 ```
 
