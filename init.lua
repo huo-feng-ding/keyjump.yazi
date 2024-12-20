@@ -7,6 +7,7 @@ local SPECIAL_KEYS = {
 	"<A-j>", "<A-k>",
 	"z",
 	"<C-j>", "<C-k>",
+	"y", "p",
 }
 
 -- stylua: ignore
@@ -31,7 +32,7 @@ local NORMAL_DOUBLE_KEYS = {
 
 	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
-	"gp", "gy", "gm", "rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
+	"rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm",
 	"xp", "xy", "xm", "tp", "ty", "tm", "vp", "vy", "vm", "bp", "by", "bm",
 
 }
@@ -139,6 +140,7 @@ local SPECIAL_CANDS = {
 	{ on = "<A-j>" }, { on = "<A-k>" },
 	{ on = "z" },
 	{ on = "<C-j>" }, { on = "<C-k>" },
+	{ on = "y" }, { on = "p" },
 }
 
 -- stylua: ignore
@@ -196,7 +198,6 @@ local NORMAL_DOUBLE_CANDS = {
 	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
 	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
 	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
-	{ on = { "g", "p" } }, { on = { "g", "y" } }, { on = { "g", "m" } },
 	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
 	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
 	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
@@ -340,17 +341,6 @@ local GLOBAL_PARENT_DOUBLE_CANDS = {
 
 -- TODO: the async jump is too fast, the current folder may cannot be found
 
--- use g + <key> to exec yazi cmd
-local GO_CANDS = {
-	-- { on = { "g", "c" },       run = "cd ~/.config",     desc = "Go to config" },
-	-- { on = { "g", "r" },       run = "cd /",          desc = "Go to /" },
-	-- { on = { "g", "d" },       run = "cd ~/down",          desc = "Go to down" },
-	-- { on = { "g", "i" },       run = "cd ~/Images",          desc = "Go to Image" },
-	-- { on = { "g", "f" },       run = "cd ~/file",          desc = "Go to file" },
-	-- { on = { "g", "u" },       run = "cd /media/UUI",          desc = "Go to U" },
-	-- { on = { "g", "l" },       run = "cd ~/_install",          desc = "Go to install" },
-	-- { on = { "g", "h" },       run = "cd ~/",          		desc = "Go to  home" },
-}
 
 -- FIXME: refactor this to avoid the loop
 local function rel_position(file, view)
@@ -523,7 +513,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	local current_entry_num = tonumber(arg_current_num)
 	local parent_entry_num = tonumber(arg_parent_num)
 	local preview_entry_num = tonumber(arg_preview_num)
-	local go_num = #GO_CANDS
+	local go_num = #state.opt_go_table
 	local folder = cx.active.current
 
 	-- hit specail key
@@ -554,9 +544,9 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("toggle", { state = toggle_state })
 			ya.manager_emit("arrow", { 1 })
 			return false
-		elseif special_key_str == "h"then
+		elseif special_key_str == "y"then
 			if state.type == "global" then
-				ya.manager_emit("leave", {})
+				ya.manager_emit("yank", {})
 			end
 			return false
 		elseif special_key_str == "j"then
@@ -592,6 +582,16 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		elseif special_key_str == "<C-k>" then
 			ya.manager_emit("arrow", { "-100%" })
 			return false
+		elseif special_key_str == "p"then
+			if state.type == "global" then
+				ya.manager_emit("paste", {})
+			end
+			return false
+		elseif special_key_str == "h"then
+			if state.type == "global" then
+				ya.manager_emit("leave", {})
+			end
+			return false
 		end
 	end
 
@@ -619,7 +619,9 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		-- hit go
 		elseif cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 			local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
-			local cmd = split_yazi_cmd_arg(GO_CANDS[go_line].exec)
+			local cmd = split_yazi_cmd_arg(state.opt_go_table[go_line].run)
+			ya.err(cmd[1])
+			ya.err(cmd[2])
 			ya.manager_emit(cmd[1], { cmd[2] }) -- Bug: async action may let 303 unkonw under cursor file
 		end
 
@@ -658,7 +660,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 end)
 
 
-local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
+local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type,go_table)
 
 	local current_num = tonumber(arg_current_num)
 	local parent_num = tonumber(arg_parent_num~= nil and arg_parent_num or "0")
@@ -710,8 +712,8 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 	end
 
 	--attach go cands to cands table
-	for i = 1, #GO_CANDS do
-		table.insert(cands, GO_CANDS[i])
+	for i = 1, #go_table do
+		table.insert(cands, go_table[i])
 	end
 
 	--attach special cands to cands table
@@ -777,12 +779,6 @@ local init_normal_action = ya.sync(function(state,action)
 	return state.current_num
 end)
 
-local set_opts_default = ya.sync(function(state)
-	if (state.opt_icon_fg == nil) then
-		state.opt_icon_fg = "#fda1a1"
-	end
-end)
-
 local go_again = ya.sync(function(state)
 	state.again = true
 end)
@@ -806,6 +802,11 @@ local clear_state = ya.sync(function (state)
 	state.type = nil
 end)
 
+
+local get_go_cand = ya.sync(function (state)
+	return state.opt_go_table
+end)
+
 local add_cwd_status_watch = ya.sync(function(state)
 
 	if state.header_status_id ~= nil then
@@ -825,34 +826,39 @@ end)
 
 return {
 	setup = function(state, opts)
-
-		-- Save the user configuration to the plugin's state
-		if (opts ~= nil and opts.icon_fg ~= nil ) then
+		if (opts == nil or opts.icon_fg == nil) then
+			state.opt_icon_fg = "#fda1a1"
+		else
 			state.opt_icon_fg  = opts.icon_fg
+		end
+		if (opts == nil or opts.go_table == nil) then
+			state.opt_go_table = {}
+
+		else
+			state.opt_go_table = opts.go_table
 		end
 	end,
 
 	entry = function(_, job)
-
-		set_opts_default()
 		add_cwd_status_watch()
 
 		local args = job.args
 		local action = args[1]
 		local want_exit = false
+		local go_table = get_go_cand()
 
 		-- enter normal, keep or select mode
 		if not action or action == "keep" or action == "select" then
 			local current_num = init_normal_action(action)
 			toggle_ui()
-			want_exit = read_input_todo(current_num, "0", "0", action)
+			want_exit = read_input_todo(current_num, "0", "0", action,go_table)
 		end
 		-- enter global mode
 		if action == "global" then
 			local times = args[2]
 			local data = init_global_action(times)
 			toggle_ui()
-			want_exit = read_input_todo(data[1], data[2], data[3], action)
+			want_exit = read_input_todo(data[1], data[2], data[3], action,go_table)
 		end
 		
 		

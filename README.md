@@ -57,6 +57,9 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 "k" : arrow up 1 entry (global)
 "j" : arrow down 1 entry (global)
 
+"y" : yank (global)
+"p" : paste(global)
+
 
 ```
 
@@ -118,9 +121,13 @@ desc = "Keyjump (once Global mode)"
 
 ## opts setting (~/.config/yazi/init.lua)
 ```lua
-require("keyjump"):setup {
+require("keyjump"):setup({
 	icon_fg = "#fda1a1",
-}
+    go_table = { -- gloabl mode jump only can use g as prefix 
+     	{ on = { "g", "d" }, run = "cd ~/down/"},
+		{ on = { "g", "t" }, run = "cd ~/tool/"},
+	},
+})
 ```
 
 When you see some character(singal character or double character) in left of the entry.
