@@ -441,6 +441,7 @@ local toggle_ui = ya.sync(function(st)
 		if st.type == "global" and cx.active.preview.folder then
 			ya.manager_emit("peek", { force = true })
 		end
+		ya.manager_emit("peek", { force = true })
 		ya.render()
 		return
 	end
