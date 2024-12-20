@@ -513,13 +513,14 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	local current_entry_num = tonumber(arg_current_num)
 	local parent_entry_num = tonumber(arg_parent_num)
 	local preview_entry_num = tonumber(arg_preview_num)
-	local go_num = #state.opt_go_table
+	local go_num = state.type == "global" and #state.opt_go_table or 0
 	local folder = cx.active.current
 
 	-- hit specail key
 	if cand > (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 		local special_key_str = SPECIAL_KEYS[cand - current_entry_num - parent_entry_num - preview_entry_num - go_num]
 		if special_key_str == "<Esc>" then
+			ya.err("sdfsdf")
 			return true
 		elseif special_key_str == "z" then
 			return true
@@ -544,9 +545,9 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("toggle", { state = toggle_state })
 			ya.manager_emit("arrow", { 1 })
 			return false
-		elseif special_key_str == "y"then
+		elseif special_key_str == "h"then
 			if state.type == "global" then
-				ya.manager_emit("yank", {})
+				ya.manager_emit("leave", {})
 			end
 			return false
 		elseif special_key_str == "j"then
@@ -582,16 +583,17 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		elseif special_key_str == "<C-k>" then
 			ya.manager_emit("arrow", { "-100%" })
 			return false
+		elseif special_key_str == "y"then
+			if state.type == "global" then
+				ya.manager_emit("yank", {})
+			end
+			return false
 		elseif special_key_str == "p"then
 			if state.type == "global" then
 				ya.manager_emit("paste", {})
 			end
 			return false
-		elseif special_key_str == "h"then
-			if state.type == "global" then
-				ya.manager_emit("leave", {})
-			end
-			return false
+
 		end
 	end
 
@@ -620,8 +622,6 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		elseif cand > (current_entry_num + parent_entry_num + preview_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num + go_num) then
 			local go_line = cand - current_entry_num - parent_entry_num - preview_entry_num
 			local cmd = split_yazi_cmd_arg(state.opt_go_table[go_line].run)
-			ya.err(cmd[1])
-			ya.err(cmd[2])
 			ya.manager_emit(cmd[1], { cmd[2] }) -- Bug: async action may let 303 unkonw under cursor file
 		end
 
@@ -644,14 +644,15 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	end
 
 	-- apply keep mode and normal mode
-	if state.type == "keep" or not state.type then
+	if (state.type == "keep" or not state.type) and folder.window[cand] then
 		ya.manager_emit("arrow", { cand - 1 + folder.offset - folder.cursor })
 	end
 
 	-- keep mode will auto enter when select folder and continue keep mode
-	if state.type == "keep" and folder.window[cand].cha.is_dir then
-		local folder = cx.active.current
+	if state.type == "keep" and folder.window[cand] and folder.window[cand].cha.is_dir then
 		ya.manager_emit("enter", {})
+		return false
+	elseif folder.window[cand] == nil then
 		return false
 	else
 		return true
@@ -712,8 +713,10 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 	end
 
 	--attach go cands to cands table
-	for i = 1, #go_table do
-		table.insert(cands, go_table[i])
+	if type == "global" then
+		for i = 1, #go_table do
+			table.insert(cands, go_table[i])
+		end
 	end
 
 	--attach special cands to cands table
