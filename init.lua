@@ -101,7 +101,7 @@ local GLOBAL_PREVIEW_DOUBLE_KEYS = {
 }
 
 -- stylua: ignore
-local GLOBAL_PARRENT_DOUBLE_KEYS = {
+local GLOBAL_PARENT_DOUBLE_KEYS = {
 	"bn", "qu", "qi", "qo", "qh", "qj", "qk", "ql", "qn", "ap", "ay", "am",
 	"fp", "fy", "fm", "ep", "ey", "em", "sp", "sy", "sm", "dp", "dy", "dm",
 	"rp", "ry", "rm", "cp", "cy", "cm", "wp", "wy", "wm", "xp", "xy", "xm", 
@@ -156,216 +156,9 @@ local INPUT_KEY = {
 	"J", "K",
 }
 
--- stylua: ignore
-local SPECIAL_CANDS = {
-	{ on = "<Space>" }, { on = "<Esc>" }, { on = "<Enter>" },
-	{ on = "<Left>" }, { on = "<Right>" }, { on = "<Up>" }, { on = "<Down>" },
-	{ on = "h" }, { on = "j" }, { on = "k" }, { on = "l" },
-	{ on = "J" }, { on = "K" },
-	{ on = "<A-j>" }, { on = "<A-k>" },
-	{ on = "z" },
-	{ on = "<C-j>" }, { on = "<C-k>" },
-	{ on = "y" }, { on = "p" },
-}
 
--- stylua: ignore
-local SIGNAL_CANDS = {
-	{ on = "p" }, { on = "b" }, { on = "e" }, { on = "t" }, { on = "a" },
-	{ on = "o" }, { on = "i" }, { on = "n" }, { on = "s" }, { on = "r" },
-	{ on = "h" }, { on = "l" }, { on = "d" }, { on = "c" }, { on = "u" },
-	{ on = "m" }, { on = "f" }, { on = "g" }, { on = "w" }, { on = "v" },
-	{ on = "k" }, { on = "j" }, { on = "x" }, { on = "y" }, { on = "q" },
-}
-
--- stylua: ignore
-local NORMAL_DOUBLE_CANDS = {
-	{ on = { "a", "u" } }, { on = { "a", "i" } }, { on = { "a", "o" } },
-	{ on = { "a", "h" } }, { on = { "a", "j" } }, { on = { "a", "k" } },
-	{ on = { "a", "l" } }, { on = { "a", "n" } }, { on = { "s", "u" } },
-	{ on = { "s", "i" } }, { on = { "s", "o" } }, { on = { "s", "h" } },
-	{ on = { "s", "j" } }, { on = { "s", "k" } }, { on = { "s", "l" } },
-	{ on = { "s", "n" } }, { on = { "d", "u" } }, { on = { "d", "i" } },
-	{ on = { "d", "o" } }, { on = { "d", "h" } }, { on = { "d", "j" } },
-	{ on = { "d", "k" } }, { on = { "d", "l" } }, { on = { "d", "n" } },
-	{ on = { "f", "u" } }, { on = { "f", "i" } }, { on = { "f", "o" } },
-	{ on = { "f", "h" } }, { on = { "f", "j" } }, { on = { "f", "k" } },
-	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } },
-	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } },
-	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } },
-	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } },
-	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } },
-	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } },
-	{ on = { "c", "u" } },
-
-	{ on = { "c", "i" } }, { on = { "c", "o" } }, { on = { "c", "h" } },
-	{ on = { "c", "j" } }, { on = { "c", "k" } }, { on = { "c", "l" } },
-	{ on = { "c", "n" } }, { on = { "w", "u" } }, { on = { "w", "i" } },
-	{ on = { "w", "o" } }, { on = { "w", "h" } }, { on = { "w", "j" } },
-	{ on = { "w", "k" } }, { on = { "w", "l" } }, { on = { "w", "n" } },
-	{ on = { "t", "u" } }, { on = { "t", "i" } }, { on = { "t", "o" } },
-	{ on = { "t", "h" } }, { on = { "t", "j" } }, { on = { "t", "k" } },
-	{ on = { "t", "l" } }, { on = { "t", "n" } }, { on = { "v", "u" } },
-	{ on = { "v", "i" } }, { on = { "v", "o" } }, { on = { "v", "h" } },
-	{ on = { "v", "j" } }, { on = { "v", "k" } }, { on = { "v", "l" } },
-	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
-	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
-	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
-	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } },
-	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } },
-	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } },
-	{ on = { "q", "m" } },
-
-	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
-	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
-	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
-	{ on = { "a", "p" } }, { on = { "a", "y" } }, { on = { "a", "m" } },
-	{ on = { "f", "p" } }, { on = { "f", "y" } }, { on = { "f", "m" } },
-	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
-	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
-	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
-	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
-	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
-	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
-	{ on = { "x", "p" } }, { on = { "x", "y" } }, { on = { "x", "m" } },
-	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
-	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
-	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
-
-
-}
-
--- stylua: ignore
-local GLOBAL_CURRENT_DOUBLE_CANDS = {
-	{ on = { "a", "u" } }, { on = { "a", "i" } }, { on = { "a", "o" } },
-	{ on = { "a", "h" } }, { on = { "a", "j" } }, { on = { "a", "k" } },
-	{ on = { "a", "l" } }, { on = { "a", "n" } }, { on = { "s", "u" } },
-	{ on = { "s", "i" } }, { on = { "s", "o" } }, { on = { "s", "h" } },
-	{ on = { "s", "j" } }, { on = { "s", "k" } }, { on = { "s", "l" } },
-	{ on = { "s", "n" } }, { on = { "d", "u" } }, { on = { "d", "i" } },
-	{ on = { "d", "o" } }, { on = { "d", "h" } }, { on = { "d", "j" } },
-	{ on = { "d", "k" } }, { on = { "d", "l" } }, { on = { "d", "n" } },
-	{ on = { "f", "u" } }, { on = { "f", "i" } }, { on = { "f", "o" } },
-	{ on = { "f", "h" } }, { on = { "f", "j" } }, { on = { "f", "k" } },
-	{ on = { "f", "l" } }, { on = { "f", "n" } }, { on = { "e", "u" } },
-	{ on = { "e", "i" } }, { on = { "e", "o" } }, { on = { "e", "h" } },
-	{ on = { "e", "j" } }, { on = { "e", "k" } }, { on = { "e", "l" } },
-	{ on = { "e", "n" } }, { on = { "r", "u" } }, { on = { "r", "i" } },
-	{ on = { "r", "o" } }, { on = { "r", "h" } }, { on = { "r", "j" } },
-	{ on = { "r", "k" } }, { on = { "r", "l" } }, { on = { "r", "n" } },
-	{ on = { "c", "u" } },
-
-	-- left hand double key
-	{ on = { "a", "q" } }, { on = { "a", "w" } }, { on = { "a", "e" } },
-	{ on = { "q", "w" } }, { on = { "q", "e" } }, { on = { "q", "r" } },
-	{ on = { "w", "e" } }, { on = { "w", "r" } }, { on = { "w", "t" } },
-	{ on = { "e", "r" } }, { on = { "e", "t" } }, { on = { "e", "s" } },
-	{ on = { "r", "t" } }, { on = { "r", "s" } }, { on = { "r", "d" } },
-	{ on = { "t", "s" } }, { on = { "t", "d" } }, { on = { "t", "f" } },
-	{ on = { "s", "d" } }, { on = { "s", "f" } }, { on = { "s", "z" } },
-	{ on = { "a", "r" } }, { on = { "a", "t" } }, { on = { "a", "s" } },
-	{ on = { "q", "t" } }, { on = { "q", "s" } }, { on = { "q", "d" } },
-	{ on = { "w", "s" } }, { on = { "w", "d" } }, { on = { "w", "f" } },
-	{ on = { "e", "d" } }, { on = { "e", "f" } }, { on = { "e", "z" } },
-	{ on = { "r", "f" } }, { on = { "r", "z" } }, { on = { "r", "x" } },
-	{ on = { "t", "z" } }, { on = { "t", "x" } }, { on = { "t", "c" } },
-	{ on = { "s", "x" } }, { on = { "s", "c" } }, { on = { "s", "v" } },
-	{ on = { "a", "d" } }, { on = { "a", "f" } }, { on = { "a", "z" } },
-	{ on = { "q", "f" } }, { on = { "q", "z" } }, { on = { "q", "x" } },
-	{ on = { "w", "z" } }, { on = { "w", "x" } }, { on = { "w", "c" } },
-	{ on = { "e", "x" } }, { on = { "e", "c" } }, { on = { "e", "v" } },
-	{ on = { "r", "c" } }, { on = { "r", "v" } }, { on = { "r", "b" } },
-	{ on = { "t", "v" } }, { on = { "t", "b" } }, { on = { "f", "z" } },
-
-}
-
-
--- stylua: ignore
-local GLOBAL_PREVIEW_DOUBLE_CANDS = {
-
-	{ on = { "c", "i" } }, { on = { "c", "o" } }, { on = { "c", "h" } },
-	{ on = { "c", "j" } }, { on = { "c", "k" } }, { on = { "c", "l" } },
-	{ on = { "c", "n" } }, { on = { "w", "u" } }, { on = { "w", "i" } },
-	{ on = { "w", "o" } }, { on = { "w", "h" } }, { on = { "w", "j" } },
-	{ on = { "w", "k" } }, { on = { "w", "l" } }, { on = { "w", "n" } },
-	{ on = { "t", "u" } }, { on = { "t", "i" } }, { on = { "t", "o" } },
-	{ on = { "t", "h" } }, { on = { "t", "j" } }, { on = { "t", "k" } },
-	{ on = { "t", "l" } }, { on = { "t", "n" } }, { on = { "v", "u" } },
-	{ on = { "v", "i" } }, { on = { "v", "o" } }, { on = { "v", "h" } },
-	{ on = { "v", "j" } }, { on = { "v", "k" } }, { on = { "v", "l" } },
-	{ on = { "v", "n" } }, { on = { "x", "u" } }, { on = { "x", "i" } },
-	{ on = { "x", "o" } }, { on = { "x", "h" } }, { on = { "x", "j" } },
-	{ on = { "x", "k" } }, { on = { "x", "l" } }, { on = { "x", "n" } },
-	{ on = { "b", "u" } }, { on = { "b", "i" } }, { on = { "b", "o" } },
-	{ on = { "b", "h" } }, { on = { "b", "j" } }, { on = { "b", "k" } },
-	{ on = { "b", "l" } }, { on = { "q", "p" } }, { on = { "q", "y" } },
-	{ on = { "q", "m" } },
-
-	-- left hand double key
-	{ on = { "s", "b" } }, { on = { "d", "f" } }, { on = { "d", "z" } },
-	{ on = { "a", "x" } }, { on = { "a", "c" } }, { on = { "a", "v" } },
-	{ on = { "q", "c" } }, { on = { "q", "v" } }, { on = { "q", "b" } },
-	{ on = { "w", "v" } }, { on = { "w", "b" } }, { on = { "c", "v" } },
-	{ on = { "e", "b" } }, { on = { "x", "c" } }, { on = { "x", "v" } },
-	{ on = { "z", "x" } }, { on = { "z", "c" } }, { on = { "z", "v" } },
-	{ on = { "f", "x" } }, { on = { "f", "c" } }, { on = { "f", "v" } },
-	{ on = { "d", "x" } }, { on = { "d", "c" } }, { on = { "d", "v" } },
-	{ on = { "a", "b" } }, { on = { "b", "a" } }, { on = { "c", "b" } },
-	{ on = { "x", "b" } }, { on = { "z", "b" } }, { on = { "f", "b" } },
-	{ on = { "d", "b" } }, { on = { "v", "b" } }, { on = { "q", "a" } },
-	{ on = { "w", "q" } }, { on = { "e", "w" } }, { on = { "r", "e" } },
-	{ on = { "t", "r" } }, { on = { "f", "d" } }, { on = { "c", "x" } },
-	{ on = { "s", "t" } }, { on = { "z", "f" } }, { on = { "v", "c" } },
-	{ on = { "d", "s" } }, { on = { "x", "z" } }, { on = { "b", "v" } },
-	{ on = { "w", "a" } }, { on = { "v", "x" } }, { on = { "c", "f" } },
-	{ on = { "e", "q" } }, { on = { "b", "c" } }, { on = { "v", "z" } },
-	{ on = { "r", "w" } }, { on = { "e", "a" } }, { on = { "b", "x" } },
-	{ on = { "t", "e" } }, { on = { "r", "q" } }, { on = { "r", "a" } },
-	{ on = { "s", "r" } }, { on = { "t", "w" } }, { on = { "t", "q" } },
-}
-
--- stylua: ignore
-local GLOBAL_PARENT_DOUBLE_CANDS = {
-	{ on = { "b", "n" } }, { on = { "q", "u" } }, { on = { "q", "i" } },
-	{ on = { "q", "o" } }, { on = { "q", "h" } }, { on = { "q", "j" } },
-	{ on = { "q", "k" } }, { on = { "q", "l" } }, { on = { "q", "n" } },
-	{ on = { "a", "p" } }, { on = { "a", "y" } }, { on = { "a", "m" } },
-	{ on = { "f", "p" } }, { on = { "f", "y" } }, { on = { "f", "m" } },
-	{ on = { "e", "p" } }, { on = { "e", "y" } }, { on = { "e", "m" } },
-	{ on = { "s", "p" } }, { on = { "s", "y" } }, { on = { "s", "m" } },
-	{ on = { "d", "p" } }, { on = { "d", "y" } }, { on = { "d", "m" } },
-	{ on = { "r", "p" } }, { on = { "r", "y" } }, { on = { "r", "m" } },
-	{ on = { "c", "p" } }, { on = { "c", "y" } }, { on = { "c", "m" } },
-	{ on = { "w", "p" } }, { on = { "w", "y" } }, { on = { "w", "m" } },
-	{ on = { "x", "p" } }, { on = { "x", "y" } }, { on = { "x", "m" } },
-	{ on = { "t", "p" } }, { on = { "t", "y" } }, { on = { "t", "m" } },
-	{ on = { "v", "p" } }, { on = { "v", "y" } }, { on = { "v", "m" } },
-	{ on = { "b", "p" } }, { on = { "b", "y" } }, { on = { "b", "m" } },
-
-	-- left hand double key
-	{ on = { "d", "t" } }, { on = { "s", "e" } }, { on = { "s", "w" } },
-	{ on = { "f", "s" } }, { on = { "d", "r" } }, { on = { "d", "e" } },
-	{ on = { "z", "d" } }, { on = { "f", "t" } }, { on = { "f", "r" } },
-	{ on = { "x", "f" } }, { on = { "z", "s" } }, { on = { "z", "t" } },
-	{ on = { "c", "z" } }, { on = { "x", "d" } }, { on = { "x", "s" } },
-	{ on = { "c", "d" } }, { on = { "c", "d" } }, { on = { "d", "a" } },
-	{ on = { "v", "f" } }, { on = { "v", "f" } }, { on = { "f", "q" } },
-	{ on = { "b", "z" } }, { on = { "b", "z" } }, { on = { "z", "w" } },
-	{ on = { "t", "a" } }, { on = { "t", "a" } }, { on = { "x", "e" } },
-	{ on = { "s", "q" } }, { on = { "s", "q" } }, { on = { "c", "r" } },
-	{ on = { "d", "w" } }, { on = { "d", "w" } }, { on = { "v", "t" } },
-	{ on = { "f", "e" } }, { on = { "f", "e" } }, { on = { "b", "s" } },
-	{ on = { "z", "r" } }, { on = { "z", "r" } }, { on = { "f", "a" } },
-	{ on = { "x", "t" } }, { on = { "x", "t" } }, { on = { "z", "q" } },
-	{ on = { "c", "s" } }, { on = { "c", "s" } }, { on = { "x", "w" } },
-	{ on = { "c", "e" } }, { on = { "c", "w" } }, { on = { "v", "w" } },
-	{ on = { "v", "r" } }, { on = { "v", "e" } }, { on = { "b", "e" } },
-	{ on = { "b", "t" } }, { on = { "b", "r" } }, { on = { "c", "a" } },
-	{ on = { "z", "a" } }, { on = { "x", "a" } }, { on = { "v", "q" } },
-	{ on = { "x", "q" } }, { on = { "c", "q" } }, { on = { "b", "w" } },
-}
-
-local GO_MENU_CAND = {
-	{ on = { "g"} },
+local GO_MENU_KEYS = {
+	"g",
 }
 
 
@@ -417,8 +210,9 @@ local function count_files(url, max)
 		cmd = cx.active.pref.show_hidden and "dir /b /a " or "dir /b "
 		cmd = cmd .. ya.quote(tostring(url))
 	else
+		local target_cwd = '"'..tostring(url)..'"'
 		cmd = cx.active.pref.show_hidden and "ls -A  " or "ls "
-		cmd = "test -r " .. ya.quote(tostring(url)) .. "&&" .. cmd .. ya.quote(tostring(url)) .. " | wc -l"
+		cmd = 'test -r ' .. target_cwd .. ' && ' .. cmd .. target_cwd .. ' | wc -l'
 	end
 
 	if ya.target_family() == "windows" then
@@ -434,9 +228,8 @@ local function count_files(url, max)
 	else
 		local f = io.popen(cmd)
 		local output = f:read("*all")
-		local num = tonumber(output)
+		local num = tonumber(output:sub(1,-2))
 		f:close()
-
 		if num == nil then
 			return 0
 		end
@@ -458,9 +251,6 @@ local toggle_ui = ya.sync(function(st)
 
 	if st.icon or st.mode then
 		Entity.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
-		if st.type == "global" and cx.active.preview.folder then
-			ya.manager_emit("peek", { force = true })
-		end
 		ya.manager_emit("peek", { force = true })
 		ya.render()
 		return
@@ -484,10 +274,10 @@ local toggle_ui = ya.sync(function(st)
 					return ui.Line {span_icon_before, ui.Span(GLOBAL_CURRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 				end
 			elseif view == "parent" then
-				if st.double_first_key ~= nil and GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
-					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
+				if st.double_first_key ~= nil and GLOBAL_PARENT_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARENT_DOUBLE_KEYS[pos]:sub(1,1)):fg(st.opt_first_key_fg),ui.Span(GLOBAL_PARENT_DOUBLE_KEYS[pos]:sub(2,2) .. " "):fg(st.opt_icon_fg)}
 				else
-					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARRENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
+					return ui.Line {span_icon_before, ui.Span(GLOBAL_PARENT_DOUBLE_KEYS[pos].." "):fg(st.opt_icon_fg)}
 				end
 			elseif view == "preview" then
 				if st.double_first_key ~= nil and GLOBAL_PREVIEW_DOUBLE_KEYS[pos]:sub(1,1) == st.double_first_key then
@@ -519,10 +309,7 @@ local toggle_ui = ya.sync(function(st)
 		}
 	end
 
-	if st.type == "global" and cx.active.preview.folder then
-		ya.manager_emit("peek", { force = true })
-	end
-
+	ya.manager_emit("peek", { force = true })
 	ya.render()
 end)
 
@@ -541,11 +328,10 @@ local function split_yazi_cmd_arg(cmd)
 end
 
 local function count_preview_files(st)
-	local folder = cx.active.current
+	local h = cx.active.current.hovered
 	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
-	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
-	if under_cursor_file and under_cursor_file.cha.is_dir then
-		st.preview_num = count_files(tostring(under_cursor_file.url), ui.Rect.default.h)
+	if h and h.cha.is_dir then
+		st.preview_num = count_files(tostring(h.url), #GLOBAL_PARENT_DOUBLE_KEYS)
 	else
 		st.preview_num = 0
 	end
@@ -557,7 +343,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 	local current_entry_num = tonumber(arg_current_num)
 	local parent_entry_num = tonumber(arg_parent_num)
 	local preview_entry_num = tonumber(arg_preview_num)
-	local go_num = state.type == "global" and #GO_MENU_CAND or 0
+	local go_num = state.type == "global" and #GO_MENU_KEYS or 0
 	local folder = cx.active.current
 
 	-- hit specail key
@@ -703,6 +489,11 @@ end)
 
 local update_double_first_key = ya.sync(function(state, str)
 	state.double_first_key = str
+	ya.manager_emit("peek", { force = true })
+end)
+
+local recaculate_preview_num  = ya.sync(function(state, cwd)
+	state.preview_num = count_files(cwd, ui.Rect.default.h)
 end)
 
 local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
@@ -727,18 +518,18 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 		current_cands = {}
 	elseif type == "global" then -- global mode disable signal key
 		is_signal_cand = false
-		current_cands = { table.unpack(GLOBAL_CURRENT_DOUBLE_CANDS, 1, current_num) }
+		current_cands = { table.unpack(GLOBAL_CURRENT_DOUBLE_KEYS, 1, current_num) }
 	elseif current_num > #SINGLE_KEYS then
 		is_signal_cand = false
-		current_cands = { table.unpack(NORMAL_DOUBLE_CANDS, 1, current_num) }
+		current_cands = { table.unpack(NORMAL_DOUBLE_KEYS, 1, current_num) }
 	else
-		current_cands = { table.unpack(SIGNAL_CANDS, 1, current_num) }
+		current_cands = { table.unpack(SINGLE_KEYS, 1, current_num) }
 	end
 
 	-- generate cands of entry of parent window
 	if parent_num ~= nil and parent_num ~= 0 then
 		is_signal_cand = false
-		parent_cands = { table.unpack(GLOBAL_PARENT_DOUBLE_CANDS, 1, parent_num) }
+		parent_cands = { table.unpack(GLOBAL_PARENT_DOUBLE_KEYS, 1, parent_num) }
 	else
 		parent_cands = {}
 		parent_num = 0
@@ -747,7 +538,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 	-- generate cands of entry of preview window
 	if preview_num ~= nil and preview_num ~= 0 then
 		is_signal_cand = false
-		preview_cands = { table.unpack(GLOBAL_PREVIEW_DOUBLE_CANDS, 1, preview_num) }
+		preview_cands = { table.unpack(GLOBAL_PREVIEW_DOUBLE_KEYS, 1, preview_num) }
 	else
 		preview_cands = {}
 		preview_num = 0
@@ -755,55 +546,46 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 
 	--attach current cands to cands table
 	for i = 1, #current_cands do
-		local sec1 = is_signal_cand and current_cands[i].on.."-" or current_cands[i].on[1]
-		local sec2 = is_signal_cand and "" or current_cands[i].on[2] or ""
-		local seca = sec1 .. sec2
-		first_key_of_lable[sec1] = ""
+		local seca = current_cands[i]
+		first_key_of_lable[seca:sub(1,1)] = ""
 		cands_count =  cands_count + 1
 		cands[seca] = cands_count
 	end
 
 	--attach parent cands to cands table
 	for i = 1, #parent_cands do
-		local sec1 = parent_cands[i].on[1]
-		local sec2 = parent_cands[i].on[2] or ""
-		local seca = sec1 .. sec2
-		first_key_of_lable[sec1] = ""
+		local seca = parent_cands[i]
+		first_key_of_lable[seca:sub(1,1)] = ""
 		cands_count =  cands_count + 1
 		cands[seca] = cands_count
 	end
 
 	--attach preview cands to cands table
 	for i = 1, #preview_cands do
-		local sec1 = preview_cands[i].on[1]
-		local sec2 = preview_cands[i].on[2] or ""
-		local seca = sec1 .. sec2
-		first_key_of_lable[sec1] = ""
+		local seca = preview_cands[i]
+		first_key_of_lable[seca:sub(1,1)] = ""
 		cands_count =  cands_count + 1
 		cands[seca] = cands_count
 	end
 
 	--attach go cands to cands table
 	if type == "global" then
-		for i = 1, #GO_MENU_CAND do
-			local sec1 = GO_MENU_CAND[i].on[1]
-			local sec2 = GO_MENU_CAND[i].on[2] or ""
-			local seca = sec1 .. sec2
-			first_key_of_lable[sec1] = ""
+		for i = 1, #GO_MENU_KEYS do
+			local seca = GO_MENU_KEYS[i]
+			first_key_of_lable[seca] = ""
 			cands_count =  cands_count + 1
 			cands[seca] = cands_count
-			special_and_go_key[sec1] = ""
+			special_and_go_key[seca] = ""
 		end
 	end
 
 	--attach special cands to cands table
-	for i = 1, #SPECIAL_CANDS do --attach special key
-		local sec1 = SPECIAL_CANDS[i].on
-		local seca = sec1
-		first_key_of_lable[sec1] = ""
+	for i = 1, #SPECIAL_KEYS do --attach special key
+		local seca = SPECIAL_KEYS[i]
+		first_key_of_lable[seca] = ""
 		cands_count =  cands_count + 1
 		cands[seca] = cands_count
-		special_and_go_key[sec1] = ""
+		special_and_go_key[seca] = ""
 	end
 
 	while true do
@@ -827,7 +609,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 			pos2 = cands[key]
 			if pos then
 				break
-			elseif pos2 then
+			elseif pos2 and type and type ~= "" then
 				pos = pos2
 				break
 			else
@@ -855,7 +637,6 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 			if first_key_of_lable[key] then	 
 				key_num_count =  key_num_count + 1		
 				update_double_first_key(key) -- apply to the render change for first key
-				ya.manager_emit("peek", { force = true })
 			else
 				key_num_count = 0 -- get the first double key fail, continue to get it
 			end
@@ -872,13 +653,13 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 				goto nextkey
 			else
 				update_double_first_key(nil)
-				ya.manager_emit("peek", { force = true })
 				break
 			end
 		end
 
 		::nextkey::
 	end
+
 	return apply(pos, current_num, parent_num, preview_num)
 
 end
@@ -891,29 +672,9 @@ local init_global_action = ya.sync(function(state,arg_times)
 	state.type = "global"
 	-- caculate file numbers of current window
 	state.current_num = #cx.active.current.window
-	if state.current_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
-		state.current_num = count_files(cx.active.current.cwd, ui.Rect.default.h)
-	end
+	state.parent_num = #cx.active.parent.window
 
-	-- caculate file numbers of parent window
-	if cx.active.parent ~= nil then
-		state.parent_num = #cx.active.parent.window
-		if state.parent_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
-			state.parent_num = count_files(cx.active.parent.cwd, ui.Rect.default.h)
-		end
-	else
-		state.parent_num = 0
-	end
-
-	-- caculate file numbers of preview window
-	if cx.active.preview.folder ~= nil then
-		state.preview_num = #cx.active.preview.folder.window
-		if state.preview_num <= ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
-			count_preview_files(state)
-		end
-	else
-		count_preview_files(state)
-	end
+	count_preview_files(state)
 
 	return {state.current_num, state.parent_num, state.preview_num}
 
@@ -1029,6 +790,7 @@ return {
 				end
 			end
 			local cmd = split_yazi_cmd_arg(go_table[cand].run)
+			recaculate_preview_num(cmd[2])
 			ya.manager_emit(cmd[1], { cmd[2] }) 
 			set_keep_hook(true)
 			go_again()
