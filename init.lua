@@ -208,7 +208,8 @@ local function count_files(url, max)
 	local cmd
 	if ya.target_family() == "windows" then
 		cmd = cx.active.pref.show_hidden and "dir /b /a " or "dir /b "
-		cmd = cmd .. ya.quote(tostring(url))
+		cmd = cmd .. tostring(url)
+		ya.err(cmd)
 	else
 		local target_cwd = '"'..tostring(url)..'"'
 		cmd = cx.active.pref.show_hidden and "ls -A  " or "ls "
@@ -493,7 +494,7 @@ local update_double_first_key = ya.sync(function(state, str)
 end)
 
 local recaculate_preview_num  = ya.sync(function(state, cwd)
-	state.preview_num = count_files(cwd, ui.Rect.default.h)
+	state.preview_num = count_files(cwd, #GLOBAL_PREVIEW_DOUBLE_KEYS)
 end)
 
 local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
@@ -688,7 +689,7 @@ local init_normal_action = ya.sync(function(state,action)
 
 	state.current_num = #cx.active.current.window
 	if state.current_num < ui.Rect.default.h then -- Maybe the folder has not been full loaded yet
-		state.current_num = count_files(cx.active.current.cwd, ui.Rect.default.h)
+		state.current_num = count_files(cx.active.current.cwd, #NORMAL_DOUBLE_KEYS)
 	end
 
 	state.type = action
@@ -731,7 +732,7 @@ local add_cwd_status_watch = ya.sync(function(state)
 	end
 
 	local function cwd_status(self)
-		if (#cx.active.current.window >0 or state.preview_num == 0) and state.again then
+		if ((#cx.active.current.window >0 and cx.active.current.hovered and cx.active.current.hovered.url) or state.preview_num == 0) and state.again then
 			state.again = false
 			local times = state.times and state.times or ""
 			ya.manager_emit("plugin", { "keyjump", args = ya.quote(state.type).." "..times})	
