@@ -672,7 +672,11 @@ local init_global_action = ya.sync(function(state,arg_times)
 	state.type = "global"
 	-- caculate file numbers of current window
 	state.current_num = #cx.active.current.window
-	state.parent_num = #cx.active.parent.window
+	if cx.active.parent and cx.active.parent.window then
+		state.parent_num = #cx.active.parent.window
+	else
+		state.parent_num = 0
+	end
 
 	count_preview_files(state)
 
