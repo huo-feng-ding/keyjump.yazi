@@ -461,13 +461,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 		elseif
 			cand > (current_entry_num + parent_entry_num) and cand <= (current_entry_num + parent_entry_num + preview_entry_num) then
 			local preview_folder = cx.active.preview.folder
-			--ya.err("cand", cand, "current_entry_num", current_entry_num, "parent_entry_num", parent_entry_num, "preview_folder.offset", preview_folder.offset, "preview_folder.cursor", preview_folder.cursor, "window", preview_folder.window[1].name, #preview_folder.window)
 			ya.manager_emit("enter", {})
-			--ya.manager_emit(
-			--	"arrow",
-			--	{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor }
-			--)
-			-- fix
 			ya.manager_emit(
 				"arrow",
 				{ cand - current_entry_num - parent_entry_num - 1 + cx.active.preview.skip - preview_folder.cursor }
