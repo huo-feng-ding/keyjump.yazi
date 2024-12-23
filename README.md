@@ -57,6 +57,10 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 "k" : arrow up 1 entry (global)
 "j" : arrow down 1 entry (global)
 
+"y" : yank (global)
+"p" : paste(global)
+
+"g" : open go menu which defined in go_table option(global)
 
 ```
 
@@ -118,9 +122,15 @@ desc = "Keyjump (once Global mode)"
 
 ## opts setting (~/.config/yazi/init.lua)
 ```lua
-require("keyjump"):setup {
+require("keyjump"):setup({
 	icon_fg = "#fda1a1",
-}
+	first_key_fg = "#df6249",
+    go_table = { -- `g` to open go menu(global mode)
+		{ on = { "h" },       run = "cd ~",             desc = "Go to home" },
+		{ on = { "c" },       run = "cd ~/.config",     desc = "Go to config" },
+		{ on = { "u" },       run = "cd /media/UUI/",     desc = "Go to Mobile disk" },
+	}
+})
 ```
 
 When you see some character(singal character or double character) in left of the entry.
