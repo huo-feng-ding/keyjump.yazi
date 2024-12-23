@@ -440,7 +440,7 @@ local apply = ya.sync(function(state, arg_cand, arg_current_num, arg_parent_num,
 			ya.manager_emit("enter", {})
 			ya.manager_emit(
 				"arrow",
-				{ cand - current_entry_num - parent_entry_num - 1 + preview_folder.offset - preview_folder.cursor }
+				{ cand - current_entry_num - parent_entry_num - 1 + cx.active.preview.skip - preview_folder.cursor }
 			)
 
 		-- hit go
