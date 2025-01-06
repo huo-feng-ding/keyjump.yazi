@@ -62,6 +62,8 @@ https://github.com/DreamMaoMao/keyjump.yazi/assets/30348075/84faf1b5-7466-49d5-9
 
 "g" : open go menu which defined in go_table option(global)
 
+"Backspace" : rollback the first input char when in double label (global,select,keep,normal)
+
 ```
 
 
