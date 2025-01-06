@@ -212,6 +212,7 @@ local function count_files(url, max)
 	if ya.target_family() == "windows" then
 		cmd = cx.active.pref.show_hidden and "dir /b /a " or "dir /b "
 		cmd = cmd .. tostring(url)
+		cmd = cmd .. ' | find /c /v ""'
 		--ya.err(cmd)
 	else
 		local target_cwd = '"'..tostring(url)..'"'
@@ -220,8 +221,8 @@ local function count_files(url, max)
 	end
 
 	if ya.target_family() == "windows" then
-		local i = 0
 --[[ 这部分代码引起 ctrl-c 退出程序，而不是关闭标签页，先注释掉此部分代码
+		local i = 0
  		local handle = io.popen(cmd)
 		for _ in handle:lines() do
 			i = i + 1
@@ -230,8 +231,22 @@ local function count_files(url, max)
 			end
 		end
 		handle:close()
-		 ]]
 		return i
+		 ]]
+		
+		local f = io.popen(cmd)
+		local output = f:read("*all")
+		local num = tonumber(output:gsub("%s+", ""), 10)
+		f:close()
+		if num == nil then
+			return 0
+		end
+
+		if num > max then
+			return max
+		else
+			return num
+		end
 	else
 		local f = io.popen(cmd)
 		local output = f:read("*all")
