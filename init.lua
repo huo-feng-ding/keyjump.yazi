@@ -234,19 +234,25 @@ local function count_files(url, max)
 		return i
 		 ]]
 		
-		local f = io.popen(cmd)
+--[[ 		local f = io.popen(cmd)
 		local output = f:read("*all")
 		local num = tonumber(output:gsub("%s+", ""), 10)
 		f:close()
+		local tourl = Url(tostring(url))
+		ya.err('aaa', url, tourl)
+		local files, err = fs.read_dir(tourl,{})
+		ya.err("ccc", #files)
 		if num == nil then
 			return 0
 		end
-
 		if num > max then
 			return max
 		else
 			return num
 		end
+		  ]]
+		return max
+		
 	else
 		local f = io.popen(cmd)
 		local output = f:read("*all")
@@ -344,11 +350,16 @@ local function split_yazi_cmd_arg(cmd)
 	return cmd_table
 end
 
-local function count_preview_files(st)
+local function count_preview_files(st, previewFilesCount)
 	local h = cx.active.current.hovered
 	-- TODO:under_cursor_file maybe nil,because aync task,floder may not ready
 	if h and h.cha.is_dir then
-		st.preview_num = count_files(tostring(h.url), #GLOBAL_PARENT_DOUBLE_KEYS)
+		-- st.preview_num = count_files(tostring(h.url), #GLOBAL_PARENT_DOUBLE_KEYS)
+		if previewFilesCount < #GLOBAL_PARENT_DOUBLE_KEYS then
+			st.preview_num = previewFilesCount
+		else
+			st.preview_num = #GLOBAL_PARENT_DOUBLE_KEYS
+		end
 	else
 		st.preview_num = 0
 	end
@@ -530,8 +541,13 @@ local update_double_first_key = ya.sync(function(state, str)
 	ya.manager_emit("peek", { force = true })
 end)
 
-local recaculate_preview_num  = ya.sync(function(state, cwd)
-	state.preview_num = count_files(cwd, #GLOBAL_PREVIEW_DOUBLE_KEYS)
+local recaculate_preview_num  = ya.sync(function(state, cwd, fileCount)
+	-- state.preview_num = count_files(cwd, #GLOBAL_PREVIEW_DOUBLE_KEYS)
+	if fileCount < #GLOBAL_PREVIEW_DOUBLE_KEYS then
+		state.preview_num = fileCount
+	else 
+		state.preview_num = #GLOBAL_PREVIEW_DOUBLE_KEYS
+	end
 end)
 
 local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,arg_type)
@@ -703,7 +719,7 @@ local function read_input_todo (arg_current_num,arg_parent_num,arg_preview_num,a
 end
 
 
-local init_global_action = ya.sync(function(state,arg_times)
+local init_global_action = ya.sync(function(state,arg_times, previewFilesCount)
 
 	-- "once" or nil,nil means to don't auto exit
 	state.times = arg_times
@@ -716,7 +732,7 @@ local init_global_action = ya.sync(function(state,arg_times)
 		state.parent_num = 0
 	end
 
-	count_preview_files(state)
+	count_preview_files(state, previewFilesCount)
 
 	return {state.current_num, state.parent_num, state.preview_num}
 
@@ -779,6 +795,19 @@ local add_cwd_status_watch = ya.sync(function(state)
 	state.header_status_id = Header:children_add(cwd_status,200,Header.LEFT)
 end)
 
+local hoveredUrl = ya.sync(function(state)
+	return cx.active.current.hovered.url
+end)
+
+local file_count = function(url)
+	local files, err = fs.read_dir(url,{})
+	if err == nil then
+		return #files
+	else 
+		return 0
+	end
+end
+
 return {
 	setup = function(state, opts)
 		if (opts == nil or opts.icon_fg == nil) then
@@ -817,7 +846,9 @@ return {
 		-- enter global mode
 		if action == "global" then
 			local times = args[2]
-			local data = init_global_action(times)
+			local url = hoveredUrl()
+			local fileCount = file_count(url)
+			local data = init_global_action(times, fileCount)
 			toggle_ui()
 			want_exit = read_input_todo(data[1], data[2], data[3], action)
 		end
@@ -832,7 +863,8 @@ return {
 				end
 			end
 			local cmd = split_yazi_cmd_arg(go_table[cand].run)
-			recaculate_preview_num(cmd[2])
+			local fileCount = file_count(Url(cmd[2]))
+			recaculate_preview_num(cmd[2], fileCount)
 			ya.manager_emit(cmd[1], { cmd[2], args=cmd[3] }) 
 			set_keep_hook(true)
 			go_again()
