@@ -289,7 +289,7 @@ local toggle_ui = ya.sync(function(st)
 	Entity.icon = function(self)
 		local file = self._file
 		local icon = file:icon()
-		local span_icon_before = file:is_hovered() and ui.Span(file:icon().text .. " ") or ui.Span(file:icon().text .. " "):style(icon.style)
+		local span_icon_before = file.is_hovered and ui.Span(file:icon().text .. " ") or ui.Span(file:icon().text .. " "):style(icon.style)
 		
 		if st.type == "global" then
 			local pos, view = rel_position(file, "all")

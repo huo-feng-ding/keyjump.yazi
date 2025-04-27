@@ -91,7 +91,7 @@ set shortcut key to toggle keyjump mode in `~/.config/yazi/keymap.toml`. for exa
 ```toml
 [[manager.prepend_keymap]]
 on   = [ "i" ]
-run  = "plugin keyjump --args=keep"
+run  = "plugin keyjump -- keep"
 desc = "Keyjump (Keep mode)"
 ```
 
@@ -105,20 +105,20 @@ desc = "Keyjump (Normal mode)"
 ```toml
 [[manager.prepend_keymap]]
 on   = [ "i" ]
-run  = "plugin keyjump --args=select"
+run  = "plugin keyjump -- select"
 desc = "Keyjump (Select mode)"
 ```
 
 ```toml
 [[manager.prepend_keymap]]
 on   = [ "i" ]
-run  = "plugin keyjump --args=global"
+run  = "plugin keyjump -- global"
 desc = "Keyjump (Global mode)"
 ```
 ```toml
 [[manager.prepend_keymap]]
 on   = [ "i" ]
-run  = "plugin keyjump --args='global once'"
+run  = "plugin keyjump -- global once"
 desc = "Keyjump (once Global mode)"
 ```
 
