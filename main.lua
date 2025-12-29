@@ -273,14 +273,14 @@ end
 local toggle_ui = ya.sync(function(st)
 
 	if st.keep_hook then
-		ya.render()
+		ui.render()
 		return
 	end
 
 	if st.icon or st.mode then
 		Entity.icon, Status.mode, st.icon, st.mode = st.icon, st.mode, nil, nil
 		ya.emit("peek", { force = true })
-		ya.render()
+		ui.render()
 		return
 	end
 
@@ -338,7 +338,7 @@ local toggle_ui = ya.sync(function(st)
 	end
 
 	ya.emit("peek", { force = true })
-	ya.render()
+	ui.render()
 end)
 
 
